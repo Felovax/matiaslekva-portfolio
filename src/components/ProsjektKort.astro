@@ -1,0 +1,107 @@
+---
+// Ett prosjektkort. Får et Prosjekt-objekt fra src/data/prosjekter.ts.
+import type { Prosjekt } from '../data/prosjekter';
+
+interface Props {
+  prosjekt: Prosjekt;
+}
+
+const { prosjekt } = Astro.props;
+---
+
+<article class="kort">
+  <div>
+    <h3>{prosjekt.navn}</h3>
+    <p class="undertittel">{prosjekt.undertittel}</p>
+  </div>
+
+  <p class="kontekst">{prosjekt.kontekst}</p>
+
+  <div>
+    <h4>Erfaring med</h4>
+    <ul class="punkter">
+      {prosjekt.erfaring.map((punkt) => <li>{punkt}</li>)}
+    </ul>
+  </div>
+
+  <ul class="tagger" aria-label="Teknologi">
+    {prosjekt.teknologi.map((t) => <li>{t}</li>)}
+  </ul>
+
+  <div class="lenker">
+    {
+      prosjekt.lenker.map((lenke) => (
+        <a href={lenke.url} target="_blank" rel="noopener noreferrer">
+          {lenke.tekst} <span aria-hidden="true">↗</span>
+        </a>
+      ))
+    }
+    {prosjekt.merknad && <span class="merknad">{prosjekt.merknad}</span>}
+  </div>
+</article>
+
+<style>
+  .kort {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: border-color 0.15s;
+  }
+
+  .kort:hover {
+    border-color: var(--border-hover);
+  }
+
+  h3 {
+    font-size: 1.375rem;
+  }
+
+  .undertittel {
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+  }
+
+  .kontekst {
+    font-size: 0.9375rem;
+  }
+
+  h4 {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .punkter {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+
+  .punkter li + li {
+    margin-top: 0.35rem;
+  }
+
+  .lenker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9375rem;
+  }
+
+  .merknad {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+</style>

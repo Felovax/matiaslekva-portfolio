@@ -1,0 +1,32 @@
+---
+import { profil } from '../data/profil';
+
+// Regnes ut når siden bygges, så året oppdaterer seg selv ved neste publisering
+const aar = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container innhold">
+    <p>© {aar} {profil.navn}</p>
+    <p>
+      Bygget med Astro.{' '}
+      <a href="https://github.com/Felovax/matiaslekva-portfolio" target="_blank" rel="noopener noreferrer">Se kildekoden</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .innhold {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+// Felles ramme for siden: <html>, <head> og global stil.
+// Alt som står mellom <Layout> og </Layout> i en side havner der <slot /> står.
+import '../styles/global.css';
+
+interface Props {
+  tittel: string;
+  beskrivelse: string;
+}
+
+const { tittel, beskrivelse } = Astro.props;
+
+// Lokalt er BASE_URL "/", men på GitHub Pages ligger siden under
+// /matiaslekva-portfolio/. Vi sørger for avsluttende skråstrek i begge tilfeller.
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tittel}</title>
+    <meta name="description" content={beskrivelse} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

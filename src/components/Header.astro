@@ -1,0 +1,100 @@
+---
+// Menyen øverst. Den er alltid synlig, så ingen trenger dungeonen for å
+// finne fram.
+import { profil } from '../data/profil';
+
+const menypunkter = [
+  { tekst: 'Om meg', href: '#om-meg' },
+  { tekst: 'Prosjekter', href: '#prosjekter' },
+  { tekst: 'Erfaring', href: '#erfaring' },
+  { tekst: 'Kontakt', href: '#kontakt' },
+];
+---
+
+<header class="header">
+  <div class="container innhold">
+    <a class="navn" href="#start">{profil.navn}</a>
+    <nav aria-label="Hovedmeny">
+      <ul>
+        {menypunkter.map((punkt) => <li><a href={punkt.href}>{punkt.tekst}</a></li>)}
+      </ul>
+    </nav>
+    <div class="profiler">
+      {/* rel="noopener noreferrer": siden vi åpner, får ikke tilgang til vår fane */}
+      <a href={profil.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href={profil.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: var(--header-height);
+    background: rgb(13 14 18 / 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .innhold {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 100%;
+  }
+
+  .navn {
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  nav {
+    margin-left: auto;
+  }
+
+  ul {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a,
+  .profiler a {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  nav a:hover,
+  .profiler a:hover {
+    color: var(--text);
+  }
+
+  .profiler {
+    display: flex;
+    gap: 1rem;
+    padding-left: 2rem;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Mobil prioriteres ikke nå, men menyen skal ikke flyte over kanten */
+  @media (max-width: 760px) {
+    .navn,
+    .profiler {
+      display: none;
+    }
+
+    nav {
+      margin-inline: auto;
+    }
+
+    ul {
+      gap: 1rem;
+    }
+  }
+</style>

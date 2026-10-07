@@ -1,0 +1,134 @@
+/* Grunnstil for hele siden.
+   Fargene ligger som variabler her, så hele siden kan justeres ett sted.
+   Aksentfargen er hentet fra fakkellyset i dungeonen, og binder spillet og
+   den vanlige siden sammen. */
+
+:root {
+  --bg: #0d0e12;
+  --surface: #15171d;
+  --border: #262a33;
+  --border-hover: #3a3f4b;
+  --text: #e8e6e3;
+  --text-muted: #9ba1ac;
+  --accent: #f0a04b;
+  --accent-soft: rgb(240 160 75 / 0.12);
+
+  /* Systemfonter: ingen nedlasting og ingen forespørsler til tredjeparter */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  --max-width: 64rem;
+  --header-height: 4rem;
+  --radius: 12px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Ankerlenker skal ikke havne under den faste menyen */
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+}
+
+/* Myk rulling bare for dem som ikke har bedt om mindre bevegelse */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  width: min(100% - 2rem, var(--max-width));
+  margin-inline: auto;
+}
+
+/* Små etiketter, f.eks. teknologier. Brukes både i prosjektkort og Om meg. */
+.tagger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tagger li {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.knapp {
+  display: inline-block;
+  padding: 0.7rem 1.3rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.knapp:hover {
+  background: transparent;
+  color: var(--accent);
+}
+
+.knapp-sekundaer {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+.knapp-sekundaer:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}

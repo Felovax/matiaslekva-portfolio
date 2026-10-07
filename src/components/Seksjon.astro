@@ -1,0 +1,44 @@
+---
+// Felles ramme for hver del av siden. id-en er det menyen og dørene i
+// dungeonen hopper til (f.eks. #prosjekter).
+interface Props {
+  id: string;
+  tittel: string;
+}
+
+const { id, tittel } = Astro.props;
+---
+
+<section id={id} class="seksjon" aria-labelledby={`${id}-tittel`}>
+  <div class="container">
+    <h2 id={`${id}-tittel`}>
+      {/* Pynt i kode-stil. aria-hidden så skjermlesere ikke leser opp "skråstrek skråstrek" */}
+      <span class="pynt" aria-hidden="true">//</span>
+      {tittel}
+    </h2>
+    <div class="innhold">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .seksjon {
+    padding-block: 6rem;
+    border-top: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .pynt {
+    margin-right: 0.4em;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .innhold {
+    margin-top: 2.5rem;
+  }
+</style>

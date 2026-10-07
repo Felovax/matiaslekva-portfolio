@@ -161,6 +161,9 @@ antall beseirede skjeletter.
 Før hver fase: si hvilke filer som lages eller endres. Etter hver fase: Matias tester,
 deretter commit.
 
+**Spilldelen (fase 2–5):** Matias vil virkelig forstå hvordan spillet kodes. Motoren
+bygges bit for bit med grundige forklaringer, og Matias skriver gjerne deler selv.
+
 - [x] **Fase 0: Oppsett.** Astro-prosjekt, koblet til GitHub-repoet, denne planen.
 - [ ] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
   Kontakt, datafiler, mørkt design, publisering på GitHub Pages.
@@ -175,5 +178,5 @@ deretter commit.
 
 ## Åpne spørsmål
 
-- Om meg-teksten skrives i fase 1.
+- Om meg-teksten: utkast ligger i `src/data/profil.ts`, Matias må lese og godkjenne.
 - Valgfritt: din del av Wavey, stillingstittel i hjemmesykepleien.

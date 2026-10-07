@@ -1,0 +1,2 @@
+# Lagre alle tekstfiler med LF-linjeskift, uansett operativsystem
+* text=auto eol=lf
