@@ -1,0 +1,53 @@
+# Bygger siden og publiserer den på GitHub Pages ved hver push til main.
+name: Publiser til GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # "Run workflow"-knapp under Actions, for å publisere manuelt
+
+# Bare én publisering om gangen. En ny push venter til den forrige er ferdig.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Minste tilgang: byggejobben trenger bare å lese koden
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # npm ci installerer nøyaktig det som står i package-lock.json
+      - run: npm ci
+
+      # Stopper publiseringen hvis koden har typefeil
+      - run: npm run check
+
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Publiseringsjobben trenger å skrive til Pages, og et id-token som beviser
+    # overfor GitHub at publiseringen kommer fra denne workflowen
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
