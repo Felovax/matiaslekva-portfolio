@@ -8,7 +8,7 @@ import Layout from '../layouts/Layout.astro';
   <main class="container">
     <h1>Dungeon-test</h1>
     {/* width/height er spillets egen oppløsning. CSS under skalerer det opp. */}
-    <canvas id="dungeon" width="368" height="144"></canvas>
+    <canvas id="dungeon" width="368" height="160"></canvas>
   </main>
 </Layout>
 
@@ -33,7 +33,7 @@ import Layout from '../layouts/Layout.astro';
     width: 100%;
     max-width: 1104px; /* 368 × 3: hver spillpiksel blir nøyaktig 3 × 3 skjermpiksler */
     margin-top: 2rem;
-    background: #000;
+    background: #0d0e12;
     /* Ikke gjør pikslene uskarpe når canvaset skaleres opp */
     image-rendering: pixelated;
   }

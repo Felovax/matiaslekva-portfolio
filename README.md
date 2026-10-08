@@ -18,6 +18,11 @@ npm run build    # bygger den ferdige siden til dist/
 npm run preview  # viser den bygde siden lokalt
 ```
 
+## Grafikk
+
+Pikselgrafikken i dungeonen er [16x16 DungeonTileset II](https://0x72.itch.io/dungeontileset-ii)
+av 0x72, med CC0-lisens. Fakler, questlogg og portaler er tegnet i kode.
+
 ## Publisering
 
 Hver push til `main` bygger og publiserer siden automatisk med GitHub Actions

@@ -112,31 +112,34 @@ Arbeid med pasienter og sensitive helseopplysninger under taushetsplikt.
 ## Dungeon
 
 ```
-###########P###########
-#T...................T#
-#....S...........S....#
+#######################
+#T#OO#T#PP#T#EE#T#KK#T#
 #.....................#
-O.......S.....S.......E
+#...S.............S...#
 #.....................#
-x.....S....@Q...S.....#
-#T.....g.......l.....T#
-###########K###########
+x.......S.....S.......#
+#.....................#
+#..S.......@Q......S..#
+#..g...............l..#
+#######################
 ```
 
 | Tegn | Hva |
 | --- | --- |
-| `@` | Start |
+| `@` | Start, nederst i midten |
 | `Q` | Questlogg |
-| `P` | Dør: Prosjekter (rett fram fra start) |
-| `O` | Dør: Om meg |
-| `E` | Dør: Erfaring |
-| `K` | Dør: Kontakt |
+| `OO` `PP` `EE` `KK` | Dører (to ruter brede): Om meg, Prosjekter, Erfaring, Kontakt |
 | `g` / `l` | Portaler til GitHub og LinkedIn (åpnes i ny fane) |
 | `S` | Skjeletter (6), kan ikke skade spilleren |
-| `T` | Fakler |
+| `T` | Fakler på veggen |
 | `x` | Sprukket vegg, slå på den for å åpne et hemmelig rom med en gummiand |
 
-23 × 9 ruter. Hele rommet vises samtidig, så vi trenger ikke kamera.
+23 × 10 ruter. Hele rommet vises samtidig, så vi trenger ikke kamera.
+
+**Hvorfor alle dørene står på toppveggen** (endret i fase 2, steg 6): Grafikken er i
+3/4-perspektiv, så bare toppveggen sees forfra og kan ha en ekte dør. Dørene står i
+samme rekkefølge som menyen, og alle er synlige fra start. Toppveggen er to ruter høy
+(kant + murstein), slik grafikken er laget.
 
 **Kontroller:** WASD/piltaster går, E samhandler og mellomrom slår. En teller viser XP og
 antall beseirede skjeletter.
