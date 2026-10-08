@@ -159,7 +159,7 @@ antall beseirede skjeletter.
 ## Faser
 
 Før hver fase: si hvilke filer som lages eller endres. Etter hver fase: Matias tester,
-deretter commit.
+committer og pusher selv.
 
 **Spilldelen (fase 2–5):** Matias vil virkelig forstå hvordan spillet kodes. Motoren
 bygges bit for bit med grundige forklaringer, og Matias skriver gjerne deler selv.
