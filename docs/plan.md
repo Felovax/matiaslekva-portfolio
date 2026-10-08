@@ -103,37 +103,43 @@ Arbeid med pasienter og sensitive helseopplysninger under taushetsplikt.
 - **Kontakt** via e-postlenke og LinkedIn, ikke skjema.
 - **Mobil prioriteres ikke nå.** Dungeonen skjules på små skjermer, og innholdet er vanlig HTML.
 - **Publisering:** GitHub Pages via GitHub Actions.
-- **Grafikk:** gratis pikselgrafikk med CC0-lisens (lisensen sjekkes før nedlasting).
+- **Grafikk:** 0x72 «16x16 DungeonTileset II» (https://0x72.itch.io/dungeontileset-ii),
+  CC0-lisens. Bare spritene vi bruker legges i `public/`. Krediteres i README selv om
+  CC0 ikke krever det.
+- **Lyd:** ingen. Kan vurderes senere, i så fall av som standard.
 - Prosjektet ligger i `C:\dev\matiaslekva-portfolio`, utenfor OneDrive.
 
 ## Dungeon
 
 ```
-###########P###########
-#T...................T#
-#....S...........S....#
+#######################
+#T#OO#T#PP#T#EE#T#KK#T#
 #.....................#
-O.......S.....S.......E
+#...S.............S...#
 #.....................#
-x.....S....@Q...S.....#
-#T.....g.......l.....T#
-###########K###########
+x.......S.....S.......#
+#.....................#
+#..S.......@Q......S..#
+#..g...............l..#
+#######################
 ```
 
 | Tegn | Hva |
 | --- | --- |
-| `@` | Start |
+| `@` | Start, nederst i midten |
 | `Q` | Questlogg |
-| `P` | Dør: Prosjekter (rett fram fra start) |
-| `O` | Dør: Om meg |
-| `E` | Dør: Erfaring |
-| `K` | Dør: Kontakt |
+| `OO` `PP` `EE` `KK` | Dører (to ruter brede): Om meg, Prosjekter, Erfaring, Kontakt |
 | `g` / `l` | Portaler til GitHub og LinkedIn (åpnes i ny fane) |
 | `S` | Skjeletter (6), kan ikke skade spilleren |
-| `T` | Fakler |
+| `T` | Fakler på veggen |
 | `x` | Sprukket vegg, slå på den for å åpne et hemmelig rom med en gummiand |
 
-23 × 9 ruter. Hele rommet vises samtidig, så vi trenger ikke kamera.
+23 × 10 ruter. Hele rommet vises samtidig, så vi trenger ikke kamera.
+
+**Hvorfor alle dørene står på toppveggen** (endret i fase 2, steg 6): Grafikken er i
+3/4-perspektiv, så bare toppveggen sees forfra og kan ha en ekte dør. Dørene står i
+samme rekkefølge som menyen, og alle er synlige fra start. Toppveggen er to ruter høy
+(kant + murstein), slik grafikken er laget.
 
 **Kontroller:** WASD/piltaster går, E samhandler og mellomrom slår. En teller viser XP og
 antall beseirede skjeletter.
@@ -167,9 +173,9 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 - [x] **Fase 0: Oppsett.** Astro-prosjekt, koblet til GitHub-repoet, denne planen.
 - [x] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
   Kontakt, datafiler, mørkt design, publisering på GitHub Pages.
-- [ ] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
+- [x] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
   bevegelse og kollisjon.
-- [ ] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
+- [x] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
   questlogg, portaler, «Hopp over dungeonen».
 - [ ] **Fase 4: Skjeletter og påskeegg.**
 - [ ] **Fase 5: Stemning og finpuss.** Fakkellys, overganger, ytelse, tastaturnavigasjon,
