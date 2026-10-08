@@ -69,6 +69,19 @@ export function tegnKart(ctx: CanvasRenderingContext2D): void {
   }
 }
 
+// Finner første rute med et gitt tegn, f.eks. '@' for startposisjonen.
+// Gir undefined hvis tegnet ikke finnes i kartet.
+export function finnRute(tegn: string): { kol: number; rad: number } | undefined {
+  for (let rad = 0; rad < RADER; rad++) {
+    // indexOf gir plassen til tegnet i raden, eller -1 hvis det ikke er der
+    const kol = KART[rad].indexOf(tegn);
+    if (kol !== -1) {
+      return { kol, rad };
+    }
+  }
+  return undefined;
+}
+
 // Sjekk under utvikling: si fra i Console hvis en rad har feil lengde.
 // (Dette er også et eksempel på en for-løkke.)
 for (let rad = 0; rad < RADER; rad++) {
