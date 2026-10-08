@@ -69,6 +69,47 @@ export function tegnKart(ctx: CanvasRenderingContext2D): void {
   }
 }
 
+// Rutene man kan gå på. Alt annet er massivt, også tegn vi ikke kjenner.
+// Det er tryggere å liste opp det som er lov enn alt som ikke er lov: glemmer
+// vi et tegn, blir det en vegg og ikke et hull. Samme prinsipp som en
+// allowlist i sikkerhet.
+// (Skjelettene står som massive ruter nå. I fase 4 blir de figurer som går rundt.)
+const GANGBARE = new Set(['.', '@']);
+
+// En bitteliten avstand. Den trekkes fra høyre- og bunnkanten når vi regner ut
+// hvilke ruter noe dekker, så det å stå akkurat inntil en vegg ikke regnes som
+// å stå inni den.
+export const LITT = 0.001;
+
+// Er ruten massiv? Ruter utenfor kartet regnes også som massive, så ingenting
+// kan gå ut av kartet.
+export function erMassiv(kol: number, rad: number): boolean {
+  if (rad < 0 || rad >= RADER || kol < 0 || kol >= KOLONNER) {
+    return true;
+  }
+  return !GANGBARE.has(KART[rad][kol]);
+}
+
+// Overlapper rektangelet (x, y, bredde, høyde) minst én massiv rute?
+export function kolliderer(x: number, y: number, bredde: number, hoyde: number): boolean {
+  // Hvilke kolonner og rader dekker rektangelet? Fra rektangelets venstre/øvre
+  // kant til høyre/nedre kant, regnet om fra piksler til ruter.
+  const forsteKol = Math.floor(x / RUTE);
+  const sisteKol = Math.floor((x + bredde - LITT) / RUTE);
+  const forsteRad = Math.floor(y / RUTE);
+  const sisteRad = Math.floor((y + hoyde - LITT) / RUTE);
+
+  // Sjekk hver av disse rutene. <= fordi både første og siste rute skal med.
+  for (let rad = forsteRad; rad <= sisteRad; rad++) {
+    for (let kol = forsteKol; kol <= sisteKol; kol++) {
+      if (erMassiv(kol, rad)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 // Finner første rute med et gitt tegn, f.eks. '@' for startposisjonen.
 // Gir undefined hvis tegnet ikke finnes i kartet.
 export function finnRute(tegn: string): { kol: number; rad: number } | undefined {

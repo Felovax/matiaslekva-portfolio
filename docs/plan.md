@@ -103,7 +103,10 @@ Arbeid med pasienter og sensitive helseopplysninger under taushetsplikt.
 - **Kontakt** via e-postlenke og LinkedIn, ikke skjema.
 - **Mobil prioriteres ikke nå.** Dungeonen skjules på små skjermer, og innholdet er vanlig HTML.
 - **Publisering:** GitHub Pages via GitHub Actions.
-- **Grafikk:** gratis pikselgrafikk med CC0-lisens (lisensen sjekkes før nedlasting).
+- **Grafikk:** 0x72 «16x16 DungeonTileset II» (https://0x72.itch.io/dungeontileset-ii),
+  CC0-lisens. Bare spritene vi bruker legges i `public/`. Krediteres i README selv om
+  CC0 ikke krever det.
+- **Lyd:** ingen. Kan vurderes senere, i så fall av som standard.
 - Prosjektet ligger i `C:\dev\matiaslekva-portfolio`, utenfor OneDrive.
 
 ## Dungeon

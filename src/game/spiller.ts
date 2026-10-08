@@ -1,6 +1,6 @@
 // Spilleren: hvor den er, hvordan den beveger seg og hvordan den tegnes.
 import { hentRetning } from './input';
-import { finnRute, RUTE } from './kart';
+import { finnRute, kolliderer, LITT, RUTE } from './kart';
 
 // Litt mindre enn en rute, så spilleren lett passer gjennom åpninger på én rute
 const STORRELSE = 12;
@@ -24,12 +24,60 @@ export function oppdaterSpiller(dt: number): void {
   // Rett fram er lengden 1. Skrått (x = 1, y = 1) er den √2 ≈ 1,41.
   const lengde = Math.hypot(retning.x, retning.y);
 
-  // Lengde 0 betyr at ingen piltast holdes, og da står spilleren stille
-  if (lengde > 0) {
-    // Ved å dele på lengden blir retningen alltid 1 lang, så spilleren ikke
-    // går 41 % fortere skrått. Så bruker vi strekning = fart × tid, som i steg 1.
-    spiller.x += (retning.x / lengde) * FART * dt;
-    spiller.y += (retning.y / lengde) * FART * dt;
+  // Lengde 0 betyr at ingen tast holdes. Da står spilleren stille, og vi
+  // avslutter med en gang (og unngår å dele på 0).
+  if (lengde === 0) return;
+
+  // Ved å dele på lengden blir retningen alltid 1 lang, så spilleren ikke går
+  // 41 % fortere skrått. Så bruker vi strekning = fart × tid, som i steg 1.
+  const dx = (retning.x / lengde) * FART * dt;
+  const dy = (retning.y / lengde) * FART * dt;
+
+  // Én akse om gangen: først bortover, så opp/ned. Da kan spilleren gli langs
+  // en vegg når den går skrått mot den, i stedet for å bli stående fast.
+  flyttBortover(dx);
+  flyttOppNed(dy);
+}
+
+// Prøver å flytte spilleren dx piksler bortover (negativ dx = mot venstre)
+function flyttBortover(dx: number): void {
+  if (dx === 0) return;
+
+  const nyX = spiller.x + dx;
+  if (!kolliderer(nyX, spiller.y, STORRELSE, STORRELSE)) {
+    spiller.x = nyX; // veien er fri
+    return;
+  }
+
+  // Veien er stengt. I stedet for å stoppe et lite stykke unna legger vi
+  // spilleren helt inntil ruten den traff. Det er ruten spillerens fremste
+  // kant havnet i. (Det stemmer fordi spilleren aldri flytter seg mer enn
+  // én rute per bilde, og det sørger MAKS_DT i main.ts for.)
+  if (dx > 0) {
+    const kol = Math.floor((nyX + STORRELSE - LITT) / RUTE);
+    spiller.x = kol * RUTE - STORRELSE; // høyre kant inntil rutens venstre side
+  } else {
+    const kol = Math.floor(nyX / RUTE);
+    spiller.x = (kol + 1) * RUTE; // venstre kant inntil rutens høyre side
+  }
+}
+
+// Samme som flyttBortover, bare for y (negativ dy = oppover)
+function flyttOppNed(dy: number): void {
+  if (dy === 0) return;
+
+  const nyY = spiller.y + dy;
+  if (!kolliderer(spiller.x, nyY, STORRELSE, STORRELSE)) {
+    spiller.y = nyY;
+    return;
+  }
+
+  if (dy > 0) {
+    const rad = Math.floor((nyY + STORRELSE - LITT) / RUTE);
+    spiller.y = rad * RUTE - STORRELSE; // bunnen inntil rutens overside
+  } else {
+    const rad = Math.floor(nyY / RUTE);
+    spiller.y = (rad + 1) * RUTE; // toppen inntil rutens underside
   }
 }
 
