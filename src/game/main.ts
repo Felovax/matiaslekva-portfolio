@@ -1,10 +1,6 @@
 // Inngangen til dungeonen. Siden kaller startDungeon(canvas), og herfra styres
 // alt som skjer i spillet.
-
-// Spillets egen oppløsning, i spillpiksler. Canvaset er nøyaktig så stort, og
-// CSS skalerer det opp på skjermen. (I steg 2 regner vi dette ut fra kartet.)
-const BREDDE = 368;
-const HOYDE = 144;
+import { BREDDE, HOYDE, tegnKart } from './kart';
 
 // En firkant som beveger seg av seg selv. I steg 4 blir den til spilleren.
 const boks = {
@@ -14,58 +10,60 @@ const boks = {
   fartX: 80, // spillpiksler per sekund. Negativ fart betyr mot venstre.
 };
 
+// Lengste tid ett bilde får telle som, i sekunder. Når fanen er skjult, pauser
+// nettleseren løkken. Uten denne grensen ville alt hoppet langt i første bilde
+// etterpå, og senere kunne spilleren hoppet rett gjennom en vegg.
+const MAKS_DT = 0.1;
+
 export function startDungeon(canvas: HTMLCanvasElement): void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return; // nettleseren støtter ikke canvas
 
+  // Canvaset får nøyaktig kartets størrelse, så det er kartet som bestemmer oppløsningen
+  canvas.width = BREDDE;
+  canvas.height = HOYDE;
+
   // Tidspunktet for forrige bilde, i millisekunder
   let forrigeTid = performance.now();
 
+  // Spill-løkken: kjører én gang per bilde, rundt 60 ganger i sekundet
   function loop(naa: number): void {
-    // TODO 1: Spill-løkken.
-    // `naa` er tidspunktet for dette bildet i millisekunder, gitt av nettleseren.
-     const dt = (naa - forrigeTid) / 1000;
-    // 1. Regn ut `dt`: hvor mange SEKUNDER som har gått siden forrige bilde.
-    //    (Tips: forskjellen mellom naa og forrigeTid er i millisekunder.)
-    // 2. Sett forrigeTid til naa, så neste runde regner fra riktig sted.
+    // Sekunder siden forrige bilde, men aldri mer enn MAKS_DT
+    const dt = Math.min((naa - forrigeTid) / 1000, MAKS_DT);
     forrigeTid = naa;
-    // 3. Kall oppdater(dt), og deretter tegn(ctx).
-    //    (TypeScript vet ikke at ctx fortsatt finnes her inne. Bruk ctx! eller
-    //    sjekk if (ctx) først.)
+
     oppdater(dt);
-    
-    // 4. Be om neste bilde: requestAnimationFrame(loop).
+
+    // TypeScript kan ikke vite at ctx fortsatt finnes her inne, så vi sjekker igjen
     if (ctx) {
       tegn(ctx);
     }
-    // Bonus: Hva skjer hvis du bytter fane i 10 sekunder og kommer tilbake?
-    // Da blir dt 10, og boksen hopper langt. Begrens dt, f.eks. med Math.min.
+
+    // Be nettleseren kalle loop igjen rett før neste bilde
     requestAnimationFrame(loop);
   }
-
 
   requestAnimationFrame(loop);
 }
 
+// Flytter ting i spillet. dt er sekunder siden forrige bilde.
 function oppdater(dt: number): void {
-  // TODO 2: Flytt boksen.
-  //
-  // 1. Ny x = gammel x + fart × tid (bruk boks.x, boks.fartX og dt).
+  // strekning = fart × tid
   boks.x += boks.fartX * dt;
-    if (boks.x + boks.storrelse > BREDDE || boks.x < 0)
-      {boks.fartX = -boks.fartX;}
-  // 2. Hvis boksen treffer høyre kant (boks.x + boks.storrelse > BREDDE)
-  //    eller venstre kant (boks.x < 0), snu retningen: boks.fartX = -boks.fartX.
- 
-  // Bonus: Hvis boksen har gått litt forbi kanten når du snur den, kan den bli
-  // stående og "riste" der. Flytt den tilbake innenfor kanten samtidig.
-  }
 
+  // Traff boksen høyre eller venstre kant? Da snur vi retningen.
+  if (boks.x + boks.storrelse > BREDDE || boks.x < 0) {
+    boks.fartX = -boks.fartX;
+    // Flytt boksen tilbake innenfor kantene, ellers kan den bli stående utenfor
+    // og snu seg fram og tilbake i det uendelige
+    boks.x = Math.max(0, Math.min(boks.x, BREDDE - boks.storrelse));
+  }
+}
+
+// Tegner hele bildet på nytt
 function tegn(ctx: CanvasRenderingContext2D): void {
-  // Mal hele flaten først. Uten dette ville vi sett et spor etter alle de
-  // tidligere bildene, fordi canvas ikke visker ut noe av seg selv.
-  ctx.fillStyle = '#1a1c22';
-  ctx.fillRect(0, 0, BREDDE, HOYDE);
+  // Kartet dekker hele flaten, så det visker samtidig ut forrige bilde
+  tegnKart(ctx);
 
   // Math.round: tegn på hele spillpiksler, så boksen ikke blir uskarp i kantene
   ctx.fillStyle = '#f0a04b';

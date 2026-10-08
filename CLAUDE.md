@@ -9,9 +9,10 @@ Beslutninger, innhold og faser står i `docs/plan.md`. Les den før du gjør end
   endres før større endringer, forklar viktige valg, og la ham teste før commit.
 - **Git:** Matias committer og pusher selv. Kjør aldri `git commit` eller
   `git push`. Foreslå heller en commit-melding når et steg er ferdig.
-- **Spilldelen (fase 2–5):** Matias vil virkelig forstå hvordan spillet kodes.
-  Bygg motoren bit for bit, forklar hver del grundig (hva, hvorfor og hvordan),
-  og la ham gjerne skrive deler selv i stedet for å levere ferdig kode.
+- **Spilldelen (fase 2–5):** Matias vil forstå hvordan spillet kodes, godt nok til
+  å forklare koden i et intervju. Han er ny til TypeScript og skriver ikke koden
+  selv. Claude skriver koden, bit for bit, og forklarer hver del grundig: hva
+  den gjør, hvorfor den er skrevet slik, og gjerne et gjennomløp med konkrete tall.
 - Ikke fabriker eller overdriv erfaring eller prosjekter i innholdet.
 
 ## Development

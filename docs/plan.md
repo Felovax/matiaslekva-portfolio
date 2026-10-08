@@ -161,8 +161,8 @@ antall beseirede skjeletter.
 Før hver fase: si hvilke filer som lages eller endres. Etter hver fase: Matias tester,
 committer og pusher selv.
 
-**Spilldelen (fase 2–5):** Matias vil virkelig forstå hvordan spillet kodes. Motoren
-bygges bit for bit med grundige forklaringer, og Matias skriver gjerne deler selv.
+**Spilldelen (fase 2–5):** Matias vil forstå koden godt nok til å forklare den. Claude
+skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 
 - [x] **Fase 0: Oppsett.** Astro-prosjekt, koblet til GitHub-repoet, denne planen.
 - [x] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
