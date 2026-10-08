@@ -175,7 +175,7 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
   Kontakt, datafiler, mørkt design, publisering på GitHub Pages.
 - [x] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
   bevegelse og kollisjon.
-- [ ] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
+- [x] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
   questlogg, portaler, «Hopp over dungeonen».
 - [ ] **Fase 4: Skjeletter og påskeegg.**
 - [ ] **Fase 5: Stemning og finpuss.** Fakkellys, overganger, ytelse, tastaturnavigasjon,

@@ -11,7 +11,9 @@ const { id, tittel } = Astro.props;
 
 <section id={id} class="seksjon" aria-labelledby={`${id}-tittel`}>
   <div class="container">
-    <h2 id={`${id}-tittel`}>
+    {/* tabindex="-1": dørene i dungeonen kan flytte tastaturfokus hit, uten at
+        overskriften blir et ekstra stopp når man tabber gjennom siden */}
+    <h2 id={`${id}-tittel`} tabindex="-1">
       {/* Pynt i kode-stil. aria-hidden så skjermlesere ikke leser opp "skråstrek skråstrek" */}
       <span class="pynt" aria-hidden="true">//</span>
       {tittel}
@@ -30,6 +32,11 @@ const { id, tittel } = Astro.props;
 
   h2 {
     font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  /* Overskriften er ikke noe man klikker på, så den trenger ingen fokusramme */
+  h2:focus {
+    outline: none;
   }
 
   .pynt {

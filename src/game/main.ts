@@ -2,11 +2,14 @@
 // alt som skjer i spillet.
 //
 // Denne filen er «dirigenten»: den eier spill-løkken og bestemmer rekkefølgen,
-// men selve arbeidet gjøres i de andre filene (kart, input, spiller, sprites).
+// men selve arbeidet gjøres i de andre filene (kart, input, spiller, sprites,
+// objekter og ui).
 import { BREDDE, HOYDE, tegnKart } from './kart';
-import { settAktiv, startInput } from './input';
+import { nullstillTrykk, settSynlig, startInput } from './input';
+import { OBJEKTER, oppdaterSamhandling } from './objekter';
 import { oppdaterSpiller, tegnSpiller } from './spiller';
 import { lastInnSprites } from './sprites';
+import { startUi } from './ui';
 
 // Lengste tid ett bilde får telle som, i sekunder. Når fanen er skjult, pauser
 // nettleseren løkken. Uten denne grensen ville alt hoppet langt i første bilde
@@ -34,6 +37,7 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
   }
 
   startInput();
+  startUi(OBJEKTER);
 
   // Spillet er bare aktivt når minst halve dungeonen er synlig på skjermen.
   // IntersectionObserver er nettleserens måte å si fra når et element kommer
@@ -42,7 +46,7 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
   const observator = new IntersectionObserver(
     (endringer) => {
       synlig = endringer[0].isIntersecting;
-      settAktiv(synlig);
+      settSynlig(synlig);
     },
     { threshold: 0.5 }, // 0.5 = minst halvparten må være synlig
   );
@@ -66,6 +70,9 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
       tegn(ctx, naa / 1000);
     }
 
+    // Hvert tastetrykk skal bare telle i ett bilde
+    nullstillTrykk();
+
     // Be nettleseren kalle loop igjen rett før neste bilde
     requestAnimationFrame(loop);
   }
@@ -76,6 +83,8 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 // Flytter alt i spillet. dt er sekunder siden forrige bilde.
 function oppdater(dt: number): void {
   oppdaterSpiller(dt);
+  // Etter at spilleren har flyttet seg: hva står den nær nå?
+  oppdaterSamhandling();
 }
 
 // Samme mørke farge som bakgrunnen på nettsiden, så dungeonen glir inn i siden

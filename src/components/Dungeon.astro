@@ -2,21 +2,64 @@
 // Dungeonen øverst på forsiden. Den er valgfri: alt innholdet finnes også i
 // menyen og lenger ned på siden. Den skjules på små skjermer, siden mobil
 // ikke prioriteres nå.
+import { QUESTLOGG } from '../data/dungeon';
 ---
 
 <section id="dungeon" class="dungeon" aria-label="Dungeon">
-  {/* role="img" og aria-label: skjermlesere får en beskrivelse i stedet for et tomt canvas */}
-  <canvas
-    id="dungeon-canvas"
-    width="368"
-    height="160"
-    role="img"
-    aria-label="En pikseldungeon med fire dører: Om meg, Prosjekter, Erfaring og Kontakt. Dungeonen er valgfri, og alt innholdet finnes også i menyen og lenger ned på siden."
-  ></canvas>
+  {/* Skiltene over dørene. ui.ts fyller dem inn og plasserer dem over hver dør. */}
+  <div id="dungeon-skilt" class="skilt-rad" aria-hidden="true"></div>
+
+  {/* Spillflaten: canvaset, med HTML-lag oppå (hint og overgang) */}
+  <div id="dungeon-flate" class="flate">
+    {/* role="img" og aria-label: skjermlesere får en beskrivelse i stedet for et tomt canvas */}
+    <canvas
+      id="dungeon-canvas"
+      width="368"
+      height="160"
+      role="img"
+      aria-label="En pikseldungeon med fire dører: Om meg, Prosjekter, Erfaring og Kontakt. Dungeonen er valgfri, og alt innholdet finnes også i menyen og lenger ned på siden."
+    ></canvas>
+    <p id="dungeon-hint" class="hint" hidden>
+      <kbd>E</kbd> <span id="dungeon-hint-tekst"></span>
+    </p>
+    {/* Mørkt lag som tones inn når man går gjennom en dør */}
+    <div class="overgang" aria-hidden="true"></div>
+  </div>
+
   <div class="linje">
-    <p class="hint"><kbd>WASD</kbd> eller <kbd>piltastene</kbd> for å gå</p>
+    <p class="kontroller">
+      <kbd>WASD</kbd> eller <kbd>piltastene</kbd> for å gå, <kbd>E</kbd> for å samhandle
+    </p>
     <a class="hopp" href="#start">Hopp over dungeonen <span aria-hidden="true">↓</span></a>
   </div>
+
+  {/* Et ekte dialogvindu. Åpnes av ui.ts med showModal(). */}
+  <dialog id="questlogg" class="questlogg" aria-labelledby="questlogg-tittel">
+    <h2 id="questlogg-tittel">Questlogg</h2>
+
+    <h3>Hovedoppdrag</h3>
+    <p>{QUESTLOGG.hovedoppdrag}</p>
+
+    <h3>Sideoppdrag</h3>
+    <ul>
+      {
+        QUESTLOGG.sideoppdrag.map((oppdrag) => (
+          <li>
+            {/* Symbolet er pynt. Skjermlesere får status som tekst i stedet. */}
+            <span aria-hidden="true">{oppdrag.ferdig ? '☑' : '☐'}</span>
+            <span class="skjult-visuelt">{oppdrag.ferdig ? 'Fullført:' : 'Ikke fullført:'}</span>{' '}
+            {oppdrag.tekst}
+          </li>
+        ))
+      }
+    </ul>
+
+    {/* method="dialog": knappen lukker vinduet uten at vi trenger JavaScript */}
+    <form method="dialog">
+      <button class="knapp knapp-sekundaer">Lukk</button>
+      <span class="lukk-hint"><kbd>Esc</kbd> eller <kbd>E</kbd></span>
+    </form>
+  </dialog>
 </section>
 
 <script>
@@ -40,7 +83,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 2rem;
+    padding-top: 1rem;
   }
 
   /* Stor skjerm: 3 × (1104 × 480 piksler). Skjermen må også være høy nok,
@@ -58,6 +101,31 @@
     }
   }
 
+  /* Skiltene over dørene */
+  .skilt-rad {
+    position: relative;
+    width: calc(368px * var(--skala));
+    height: 1.75rem;
+  }
+
+  /* :global fordi skiltene lages av JavaScript. Astro gir bare stil til
+     elementer som står i denne filen, med mindre vi sier :global. */
+  .skilt-rad :global(.skilt) {
+    position: absolute;
+    bottom: 0.35rem;
+    transform: translateX(-50%); /* midtstilt over døren */
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* Spillflaten. position: relative gjør at hint og overgang kan plasseres
+     med prosent oppå canvaset. */
+  .flate {
+    position: relative;
+  }
+
   canvas {
     display: block;
     /* Fast størrelse fra start, så siden ikke hopper når spillet laster */
@@ -65,6 +133,34 @@
     height: calc(160px * var(--skala));
     background: var(--bg);
     image-rendering: pixelated;
+  }
+
+  .hint {
+    position: absolute;
+    /* Midtstilt over punktet, og løftet så bunnen av hintet står på punktet */
+    transform: translate(-50%, -100%);
+    margin: 0;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border-hover);
+    border-radius: 6px;
+    background: rgb(13 14 18 / 0.92);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    pointer-events: none; /* hintet skal aldri være i veien for musen */
+  }
+
+  .overgang {
+    position: absolute;
+    inset: 0; /* dekker hele flaten */
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  /* ui.ts legger på klassen morkt når man går gjennom en dør */
+  .morkt .overgang {
+    opacity: 1;
   }
 
   .linje {
@@ -93,5 +189,60 @@
 
   .hopp:hover {
     color: var(--text);
+  }
+
+  /* Questlogg-vinduet */
+  .questlogg {
+    width: min(100% - 2rem, 26rem);
+    padding: 1.75rem;
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  /* Den mørke flaten bak vinduet */
+  .questlogg::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+
+  .questlogg h2 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .questlogg h3 {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .questlogg p {
+    margin-top: 0.35rem;
+  }
+
+  .questlogg ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .questlogg form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .lukk-hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
   }
 </style>
