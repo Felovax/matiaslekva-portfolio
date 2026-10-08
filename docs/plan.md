@@ -165,7 +165,7 @@ committer og pusher selv.
 bygges bit for bit med grundige forklaringer, og Matias skriver gjerne deler selv.
 
 - [x] **Fase 0: Oppsett.** Astro-prosjekt, koblet til GitHub-repoet, denne planen.
-- [ ] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
+- [x] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
   Kontakt, datafiler, mørkt design, publisering på GitHub Pages.
 - [ ] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
   bevegelse og kollisjon.
