@@ -4,7 +4,7 @@
 // Denne filen er «dirigenten»: den eier spill-løkken og bestemmer rekkefølgen,
 // men selve arbeidet gjøres i de andre filene (kart, input, spiller, sprites).
 import { BREDDE, HOYDE, tegnKart } from './kart';
-import { startInput } from './input';
+import { settAktiv, startInput } from './input';
 import { oppdaterSpiller, tegnSpiller } from './spiller';
 import { lastInnSprites } from './sprites';
 
@@ -35,6 +35,19 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
   startInput();
 
+  // Spillet er bare aktivt når minst halve dungeonen er synlig på skjermen.
+  // IntersectionObserver er nettleserens måte å si fra når et element kommer
+  // inn i eller går ut av bildet, uten at vi må sjekke det selv hele tiden.
+  let synlig = true;
+  const observator = new IntersectionObserver(
+    (endringer) => {
+      synlig = endringer[0].isIntersecting;
+      settAktiv(synlig);
+    },
+    { threshold: 0.5 }, // 0.5 = minst halvparten må være synlig
+  );
+  observator.observe(canvas);
+
   // Tidspunktet for forrige bilde, i millisekunder
   let forrigeTid = performance.now();
 
@@ -44,10 +57,11 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
     const dt = Math.min((naa - forrigeTid) / 1000, MAKS_DT);
     forrigeTid = naa;
 
-    oppdater(dt);
-
-    // TypeScript kan ikke vite at ctx fortsatt finnes her inne, så vi sjekker igjen
-    if (ctx) {
+    // Er dungeonen rullet ut av bildet, hviler spillet: ingen oppdatering og
+    // ingen tegning. Det sparer strøm og prosessor mens man leser siden.
+    // TypeScript kan ikke vite at ctx fortsatt finnes her inne, så vi sjekker igjen.
+    if (synlig && ctx) {
+      oppdater(dt);
       // Animasjonene trenger tiden i sekunder
       tegn(ctx, naa / 1000);
     }

@@ -21,14 +21,29 @@ const SPILLTASTER = new Set([
   'ArrowRight',
 ]);
 
+// Er spillet i bruk? Når dungeonen er rullet ut av bildet, skal tastene
+// virke som vanlig igjen, f.eks. piltastene til å rulle siden.
+let aktiv = true;
+
+// Slår spillet på eller av. Kalles fra main.ts når dungeonen blir synlig eller usynlig.
+export function settAktiv(verdi: boolean): void {
+  aktiv = verdi;
+  if (!aktiv) {
+    nede.clear(); // slipp alle taster, så spilleren ikke går videre av seg selv
+  }
+}
+
 // Begynner å lytte på tastaturet. Kalles én gang når spillet starter.
 export function startInput(): void {
   window.addEventListener('keydown', (event) => {
-    if (!SPILLTASTER.has(event.code)) return; // ikke en spilltast, la nettleseren håndtere den
+    if (!aktiv) return; // spillet hviler, la nettleseren håndtere tasten
+    if (!SPILLTASTER.has(event.code)) return; // ikke en spilltast
+    // Med Ctrl, Alt eller Cmd er det en snarvei, ikke spill. Alt + venstre pil
+    // er f.eks. «tilbake» i nettleseren, og den skal aldri blokkeres.
+    if (event.ctrlKey || event.altKey || event.metaKey) return;
 
     nede.add(event.code);
-    // Hindrer at piltastene ruller siden mens man spiller.
-    // (Steg 7: dette må bare skje når dungeonen er i bruk, ikke når man leser siden.)
+    // Hindrer at piltastene ruller siden mens man spiller
     event.preventDefault();
   });
 

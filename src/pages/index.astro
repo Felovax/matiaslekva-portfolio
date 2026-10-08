@@ -6,6 +6,7 @@ import Header from '../components/Header.astro';
 import Seksjon from '../components/Seksjon.astro';
 import ProsjektKort from '../components/ProsjektKort.astro';
 import Footer from '../components/Footer.astro';
+import Dungeon from '../components/Dungeon.astro';
 import { profil, teknologi } from '../data/profil';
 import { prosjekter } from '../data/prosjekter';
 import { erfaring, kurs } from '../data/erfaring';
@@ -15,7 +16,8 @@ import { erfaring, kurs } from '../data/erfaring';
   <Header />
 
   <main>
-    {/* Fase 2: dungeonen kommer inn her, over teksten */}
+    <Dungeon />
+
     <section id="start" class="hero">
       <div class="container">
         <p class="hei">Hei, jeg er {profil.navn}</p>
@@ -121,7 +123,7 @@ import { erfaring, kurs } from '../data/erfaring';
 <style>
   /* Toppseksjon */
   .hero {
-    padding-block: 7rem 6rem;
+    padding-block: 4rem 6rem;
   }
 
   .hei {

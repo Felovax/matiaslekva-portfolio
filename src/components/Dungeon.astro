@@ -1,0 +1,97 @@
+---
+// Dungeonen øverst på forsiden. Den er valgfri: alt innholdet finnes også i
+// menyen og lenger ned på siden. Den skjules på små skjermer, siden mobil
+// ikke prioriteres nå.
+---
+
+<section id="dungeon" class="dungeon" aria-label="Dungeon">
+  {/* role="img" og aria-label: skjermlesere får en beskrivelse i stedet for et tomt canvas */}
+  <canvas
+    id="dungeon-canvas"
+    width="368"
+    height="160"
+    role="img"
+    aria-label="En pikseldungeon med fire dører: Om meg, Prosjekter, Erfaring og Kontakt. Dungeonen er valgfri, og alt innholdet finnes også i menyen og lenger ned på siden."
+  ></canvas>
+  <div class="linje">
+    <p class="hint"><kbd>WASD</kbd> eller <kbd>piltastene</kbd> for å gå</p>
+    <a class="hopp" href="#start">Hopp over dungeonen <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<script>
+  import { startDungeon } from '../game/main';
+
+  // Samme grense som i CSS-en under. På smalere skjermer starter vi ikke
+  // spillet i det hele tatt, så de slipper å laste ned grafikken.
+  const storNok = window.matchMedia('(min-width: 760px)').matches;
+  const canvas = document.getElementById('dungeon-canvas');
+
+  if (storNok && canvas instanceof HTMLCanvasElement) {
+    startDungeon(canvas);
+  }
+</script>
+
+<style>
+  .dungeon {
+    /* Hvor mange skjermpiksler hver spillpiksel blir. Hele tall gir skarpe piksler. */
+    --skala: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+  }
+
+  /* Stor skjerm: 3 × (1104 × 480 piksler). Skjermen må også være høy nok,
+     ellers skyver dungeonen hovedbudskapet ut av første skjermbilde. */
+  @media (min-width: 1200px) and (min-height: 900px) {
+    .dungeon {
+      --skala: 3;
+    }
+  }
+
+  /* Liten skjerm: ingen dungeon */
+  @media (max-width: 759px) {
+    .dungeon {
+      display: none;
+    }
+  }
+
+  canvas {
+    display: block;
+    /* Fast størrelse fra start, så siden ikke hopper når spillet laster */
+    width: calc(368px * var(--skala));
+    height: calc(160px * var(--skala));
+    background: var(--bg);
+    image-rendering: pixelated;
+  }
+
+  .linje {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(368px * var(--skala));
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
+
+  .hopp {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .hopp:hover {
+    color: var(--text);
+  }
+</style>

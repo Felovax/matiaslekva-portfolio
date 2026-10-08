@@ -173,7 +173,7 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 - [x] **Fase 0: Oppsett.** Astro-prosjekt, koblet til GitHub-repoet, denne planen.
 - [x] **Fase 1: Den vanlige porteføljen.** Meny, Om meg, Prosjekter, Erfaring og kurs,
   Kontakt, datafiler, mørkt design, publisering på GitHub Pages.
-- [ ] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
+- [x] **Fase 2: Grunnmuren til dungeonen.** Canvas, spill-løkke, kart med pikselgrafikk,
   bevegelse og kollisjon.
 - [ ] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
   questlogg, portaler, «Hopp over dungeonen».
