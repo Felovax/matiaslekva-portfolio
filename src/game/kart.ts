@@ -7,8 +7,8 @@
 //   T  fakkel på veggen  x  sprukket vegg (hemmelig)
 //   @  start             Q  questlogg
 //   g  GitHub-portal     l  LinkedIn-portal
-//   S  skjelett
-import { animasjonsbilde, SPRITES, tegnSprite, type Sprite } from './sprites';
+//   S  startpunkt for et skjelett (selve skjelettene styres i skjeletter.ts)
+import { SPRITES, tegnSprite, type Sprite } from './sprites';
 
 export const KART = [
   '#######################',
@@ -84,10 +84,6 @@ export function tegnKart(ctx: CanvasRenderingContext2D, tid: number): void {
           break;
         case 'T':
           tegnFakkel(ctx, x, y, tid);
-          break;
-        case 'S':
-          // forskyvning: hvert skjelett er i sin egen takt, så de ikke vugger likt
-          tegnSprite(ctx, animasjonsbilde(SPRITES.skjelett, tid, 6, kol), x, y);
           break;
         case 'Q':
           tegnQuestlogg(ctx, x, y);
@@ -212,8 +208,9 @@ function tegnPortal(ctx: CanvasRenderingContext2D, x: number, y: number, farge: 
 // Det er tryggere å liste opp det som er lov enn alt som ikke er lov: glemmer
 // vi et tegn, blir det en vegg og ikke et hull. Samme prinsipp som en
 // allowlist i sikkerhet.
-// (Skjelettene står som massive ruter nå. I fase 4 blir de figurer som går rundt.)
-const GANGBARE = new Set(['.', '@']);
+// S er bare et startpunkt for et skjelett, så ruten er vanlig gulv. Selve
+// skjelettene er figurer, og kollisjon med dem håndteres i figur.ts.
+const GANGBARE = new Set(['.', '@', 'S']);
 
 // En bitteliten avstand. Den trekkes fra høyre- og bunnkanten når vi regner ut
 // hvilke ruter noe dekker, så det å stå akkurat inntil en vegg ikke regnes som

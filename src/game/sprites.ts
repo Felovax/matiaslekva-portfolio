@@ -63,7 +63,8 @@ export const SPRITES = {
     sprite(224, 100, 16, 28),
     sprite(240, 100, 16, 28),
   ],
-  skjelett: [sprite(368, 88), sprite(384, 88), sprite(400, 88), sprite(416, 88)],
+  skjelettStaar: [sprite(368, 88), sprite(384, 88), sprite(400, 88), sprite(416, 88)],
+  skjelettLoper: [sprite(432, 88), sprite(448, 88), sprite(464, 88), sprite(480, 88)],
 };
 
 // Selve bildet. Det lastes én gang, før spillet starter.

@@ -67,12 +67,20 @@ import { QUESTLOGG } from '../data/dungeon';
 
   // Samme grense som i CSS-en under. På smalere skjermer starter vi ikke
   // spillet i det hele tatt, så de slipper å laste ned grafikken.
-  const storNok = window.matchMedia('(min-width: 760px)').matches;
+  const storNok = window.matchMedia('(min-width: 760px)');
   const canvas = document.getElementById('dungeon-canvas');
+  let startet = false;
 
-  if (storNok && canvas instanceof HTMLCanvasElement) {
+  function startHvisStorNok(): void {
+    if (startet || !storNok.matches || !(canvas instanceof HTMLCanvasElement)) return;
+    startet = true;
     startDungeon(canvas);
   }
+
+  startHvisStorNok();
+  // Gjøres vinduet bredere etter at siden er lastet, starter vi spillet da.
+  // Ellers ville CSS-en vist dungeonen som en svart boks uten spill.
+  storNok.addEventListener('change', startHvisStorNok);
 </script>
 
 <style>
