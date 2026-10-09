@@ -4,6 +4,7 @@
 import { DORER, PORTALER } from '../data/dungeon';
 import { bleTrykket } from './input';
 import { KART, KOLONNER, RADER, RUTE } from './kart';
+import { naermesteSkjelett } from './skjeletter';
 import { spiller } from './spiller';
 import { aapneLenke, gaaTilSeksjon, visHint, visQuestlogg } from './ui';
 
@@ -80,13 +81,34 @@ function finnObjekter(): Objekt[] {
 }
 
 // Kalles hvert bilde: vis hint for det nærmeste objektet, og utfør det hvis E
-// ble trykket
+// ble trykket. Er ingen objekter nær, vises navnet på et skjelett i nærheten.
 export function oppdaterSamhandling(): void {
   const naermeste = finnNaermeste();
-  visHint(naermeste);
 
-  if (naermeste && bleTrykket('KeyE')) {
-    samhandle(naermeste);
+  if (naermeste) {
+    visHint({ tast: 'E', tekst: naermeste.hint, x: naermeste.x, y: naermeste.hintY });
+    if (bleTrykket('KeyE')) {
+      samhandle(naermeste);
+    }
+    return;
+  }
+
+  const skjelett = naermesteSkjelett(
+    spiller.x + spiller.storrelse / 2,
+    spiller.y + spiller.storrelse / 2,
+    REKKEVIDDE,
+  );
+  if (skjelett) {
+    // Hintet følger skjelettet: midt over det, rett over hodet (grafikken er
+    // 6 piksler høyere enn treffboksen)
+    visHint({
+      tast: 'Mellomrom',
+      tekst: `Slå ${skjelett.navn}`,
+      x: skjelett.x + skjelett.storrelse / 2,
+      y: skjelett.y - 7,
+    });
+  } else {
+    visHint(undefined);
   }
 }
 

@@ -21,6 +21,8 @@ export const spiller = {
   storrelse: STORRELSE,
   gaar: false, // går spilleren akkurat nå? Styrer hvilken animasjon som vises.
   serVenstre: false, // ridderen ser mot høyre i grafikken, så venstre = speilvendt
+  // Retningen ridderen så sist: opp, ned, venstre eller høyre. Sverdet slår hit.
+  blikk: { x: 1, y: 0 },
 };
 
 // andre: figurene spilleren ikke kan gå gjennom (skjelettene)
@@ -40,6 +42,14 @@ export function oppdaterSpiller(dt: number, andre: Figur[]): void {
   // Lengde 0 betyr at ingen tast holdes. Da står spilleren stille, og vi
   // avslutter med en gang (og unngår å dele på 0).
   if (lengde === 0) return;
+
+  // Husk blikkretningen som en av fire retninger. Går man skrått, vinner
+  // sideveis. Math.sign gir -1, 0 eller 1 ut fra fortegnet.
+  if (Math.abs(retning.x) >= Math.abs(retning.y)) {
+    spiller.blikk = { x: Math.sign(retning.x), y: 0 };
+  } else {
+    spiller.blikk = { x: 0, y: Math.sign(retning.y) };
+  }
 
   // Ved å dele på lengden blir retningen alltid 1 lang, så spilleren ikke går
   // 41 % fortere skrått. Så bruker vi strekning = fart × tid, som i steg 1.

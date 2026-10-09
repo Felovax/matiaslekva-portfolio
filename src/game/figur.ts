@@ -22,6 +22,12 @@ function treffer(figur: Figur, x: number, y: number, annen: Figur): boolean {
   );
 }
 
+// Overlapper to figurer der de står nå? Brukes bl.a. av kampen for å se om
+// sverdet treffer et skjelett.
+export function overlapper(a: Figur, b: Figur): boolean {
+  return treffer(a, a.x, a.y, b);
+}
+
 // Ville figuren truffet noen av de andre figurene på (x, y)?
 function trefferNoen(figur: Figur, x: number, y: number, andre: Figur[]): boolean {
   for (const annen of andre) {

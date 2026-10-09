@@ -6,11 +6,18 @@
 // skjeletter, figur, sprites, objekter og ui).
 import { BREDDE, HOYDE, tegnKart } from './kart';
 import { nullstillTrykk, settSynlig, startInput } from './input';
+import { oppdaterKamp, tegnSverd } from './kamp';
 import { OBJEKTER, oppdaterSamhandling } from './objekter';
-import { oppdaterSkjeletter, skjeletter, tegnSkjelett } from './skjeletter';
+import {
+  levendeSkjeletter,
+  oppdaterSkjeletter,
+  skjeletter,
+  tegnHodeskaller,
+  tegnSkjelett,
+} from './skjeletter';
 import { oppdaterSpiller, spiller, tegnSpiller } from './spiller';
 import { lastInnSprites } from './sprites';
-import { startUi } from './ui';
+import { oppdaterStatus, startUi } from './ui';
 
 // Lengste tid ett bilde får telle som, i sekunder. Når fanen er skjult, pauser
 // nettleseren løkken. Uten denne grensen ville alt hoppet langt i første bilde
@@ -39,6 +46,7 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
   startInput();
   startUi(OBJEKTER);
+  oppdaterStatus(0, 0, skjeletter.length); // «XP 0 · Skjeletter 0/6»
 
   // Spillet er bare aktivt når minst halve dungeonen er synlig på skjermen.
   // IntersectionObserver er nettleserens måte å si fra når et element kommer
@@ -83,9 +91,10 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
 // Flytter alt i spillet. dt er sekunder siden forrige bilde.
 function oppdater(dt: number): void {
-  // Spilleren kan ikke gå gjennom skjelettene, og omvendt
-  oppdaterSpiller(dt, skjeletter);
+  // Spilleren kan ikke gå gjennom skjelettene som står, og omvendt
+  oppdaterSpiller(dt, levendeSkjeletter());
   oppdaterSkjeletter(dt, spiller);
+  oppdaterKamp(dt);
   // Etter at spilleren har flyttet seg: hva står den nær nå?
   oppdaterSamhandling();
 }
@@ -102,6 +111,8 @@ function tegn(ctx: CanvasRenderingContext2D, tid: number): void {
   ctx.fillRect(0, 0, BREDDE, HOYDE);
 
   tegnKart(ctx, tid);
+  // Hodeskallene ligger på gulvet, så de tegnes før figurene
+  tegnHodeskaller(ctx);
 
   // Figurene tegnes sortert etter hvor langt ned føttene står. Den som står
   // lengst ned, er nærmest oss i dette perspektivet og tegnes sist, så den
@@ -109,8 +120,16 @@ function tegn(ctx: CanvasRenderingContext2D, tid: number): void {
   // Hver figur i listen har «bunn» (hvor føttene står) og «tegn» (en funksjon
   // som tegner den). Slik kan spiller og skjeletter sorteres i samme liste.
   const figurer = [
-    { bunn: spiller.y + spiller.storrelse, tegn: () => tegnSpiller(ctx, tid) },
-    ...skjeletter.map((skjelett) => ({
+    {
+      bunn: spiller.y + spiller.storrelse,
+      // Sverdet tegnes bak ridderen når han slår oppover, ellers foran
+      tegn: () => {
+        tegnSverd(ctx, 'bak');
+        tegnSpiller(ctx, tid);
+        tegnSverd(ctx, 'foran');
+      },
+    },
+    ...levendeSkjeletter().map((skjelett) => ({
       bunn: skjelett.y + skjelett.storrelse,
       tegn: () => tegnSkjelett(ctx, skjelett, tid),
     })),

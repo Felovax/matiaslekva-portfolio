@@ -20,16 +20,21 @@ import { QUESTLOGG } from '../data/dungeon';
       aria-label="En pikseldungeon med fire dører: Om meg, Prosjekter, Erfaring og Kontakt. Dungeonen er valgfri, og alt innholdet finnes også i menyen og lenger ned på siden."
     ></canvas>
     <p id="dungeon-hint" class="hint" hidden>
-      <kbd>E</kbd> <span id="dungeon-hint-tekst"></span>
+      <kbd id="dungeon-hint-tast">E</kbd> <span id="dungeon-hint-tekst"></span>
     </p>
+    {/* Korte meldinger, f.eks. når et skjelett faller. role="status" gjør at
+        skjermlesere leser dem opp uten å avbryte noe annet. */}
+    <p id="dungeon-melding" class="melding" role="status"></p>
     {/* Mørkt lag som tones inn når man går gjennom en dør */}
     <div class="overgang" aria-hidden="true"></div>
   </div>
 
   <div class="linje">
     <p class="kontroller">
-      <kbd>WASD</kbd> eller <kbd>piltastene</kbd> for å gå, <kbd>E</kbd> for å samhandle
+      <kbd>WASD</kbd> gå · <kbd>E</kbd> samhandle · <kbd>Mellomrom</kbd> slå
     </p>
+    {/* Fylles inn av ui.ts: «XP 0 · Skjeletter 0/6» */}
+    <p id="dungeon-status" class="status"></p>
     <a class="hopp" href="#start">Hopp over dungeonen <span aria-hidden="true">↓</span></a>
   </div>
 
@@ -155,6 +160,44 @@ import { QUESTLOGG } from '../data/dungeon';
     font-size: 0.8125rem;
     white-space: nowrap;
     pointer-events: none; /* hintet skal aldri være i veien for musen */
+  }
+
+  .melding {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    transform: translate(-50%, -0.5rem); /* starter litt høyere, glir ned når den vises */
+    margin: 0;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: rgb(13 14 18 / 0.92);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      opacity 0.25s,
+      transform 0.25s;
+    pointer-events: none;
+  }
+
+  /* ui.ts legger på klassen vis når en melding skal vises */
+  .melding.vis {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .melding {
+      transition: none;
+    }
+  }
+
+  .status {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
   }
 
   .overgang {

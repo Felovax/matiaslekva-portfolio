@@ -24,6 +24,7 @@ const SPILLTASTER = new Set([
   'ArrowLeft',
   'ArrowRight',
   'KeyE',
+  'Space',
 ]);
 
 // Spillet tar bare imot taster når dungeonen er synlig, og når det ikke er
@@ -64,6 +65,11 @@ export function startInput(): void {
     // Med Ctrl, Alt eller Cmd er det en snarvei, ikke spill. Alt + venstre pil
     // er f.eks. «tilbake» i nettleseren, og den skal aldri blokkeres.
     if (event.ctrlKey || event.altKey || event.metaKey) return;
+    // Står fokus i en knapp eller et skjemafelt, tilhører tasten den.
+    // Mellomrom skal f.eks. trykke på knappen, ikke slå med sverdet.
+    if (event.target instanceof Element && event.target.closest('button, input, select, textarea')) {
+      return;
+    }
 
     nede.add(event.code);
     // event.repeat er true når nettleseren gjentar tasten fordi den holdes inne.

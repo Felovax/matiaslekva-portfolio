@@ -17,9 +17,9 @@ export const PORTALER: Record<string, { navn: string; url: string }> = {
 };
 
 // Skjelettene, i den rekkefølgen S-ene står i kartet (rad for rad, fra venstre).
-// melding vises når skjelettet er beseiret.
+// melding vises når skjelettet er beseiret, etterfulgt av «+10 XP».
 export const SKJELETTER = [
-  { navn: 'Legacy Code', melding: 'Legacy-kode fjernet. +10 XP' },
+  { navn: 'Legacy Code', melding: 'Legacy-kode fjernet.' },
   { navn: 'NullReferenceException', melding: 'Exception håndtert.' },
   { navn: 'Works On My Machine', melding: 'Fungerer på din maskin også nå.' },
   { navn: 'Merge Conflict', melding: 'Merge-konflikt løst.' },

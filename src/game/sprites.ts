@@ -65,6 +65,10 @@ export const SPRITES = {
   ],
   skjelettStaar: [sprite(368, 88), sprite(384, 88), sprite(400, 88), sprite(416, 88)],
   skjelettLoper: [sprite(432, 88), sprite(448, 88), sprite(464, 88), sprite(480, 88)],
+  hodeskalle: sprite(288, 432),
+
+  // Sverdet peker oppover i grafikken, med håndtaket nederst
+  sverd: sprite(323, 10, 10, 21),
 };
 
 // Selve bildet. Det lastes én gang, før spillet starter.
@@ -105,6 +109,26 @@ export function tegnSprite(
   ctx.translate(px + (valg.speilX ? s.b : 0), py + (valg.speilY ? s.h : 0));
   ctx.scale(valg.speilX ? -1 : 1, valg.speilY ? -1 : 1);
   ctx.drawImage(bilde, s.x, s.y, s.b, s.h, 0, 0, s.b, s.h);
+  ctx.restore();
+}
+
+// Tegner en sprite rotert rundt midten av nederkanten, f.eks. håndtaket på
+// sverdet. vinkel er i radianer: 0 = som i grafikken, π/2 = en kvart runde
+// med klokka. Kvarte runder holder pikslene skarpe.
+export function tegnSpriteRotert(
+  ctx: CanvasRenderingContext2D,
+  s: Sprite,
+  x: number,
+  y: number,
+  vinkel: number,
+): void {
+  ctx.save();
+  // Flytt nullpunktet til (x, y) og drei hele tegneflaten. Alt som tegnes
+  // etterpå, tegnes dreid rundt dette punktet.
+  ctx.translate(Math.round(x), Math.round(y));
+  ctx.rotate(vinkel);
+  // Tegn spriten så midten av nederkanten havner i nullpunktet
+  ctx.drawImage(bilde, s.x, s.y, s.b, s.h, -Math.round(s.b / 2), -s.h, s.b, s.h);
   ctx.restore();
 }
 
