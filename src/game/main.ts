@@ -8,6 +8,7 @@ import { BREDDE, HOYDE, tegnKart } from './kart';
 import { nullstillTrykk, settSynlig, startInput } from './input';
 import { oppdaterKamp, tegnSverd } from './kamp';
 import { OBJEKTER, oppdaterSamhandling } from './objekter';
+import { oppdaterPaaskeegg } from './paaskeegg';
 import {
   levendeSkjeletter,
   oppdaterSkjeletter,
@@ -91,10 +92,12 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
 // Flytter alt i spillet. dt er sekunder siden forrige bilde.
 function oppdater(dt: number): void {
-  // Spilleren kan ikke gå gjennom skjelettene som står, og omvendt
-  oppdaterSpiller(dt, levendeSkjeletter());
+  // Spilleren kan ikke gå gjennom skjelettene som står, og omvendt.
+  // dunket: traff spilleren noe akkurat nå? Påskeegget trenger å vite det.
+  const dunket = oppdaterSpiller(dt, levendeSkjeletter());
   oppdaterSkjeletter(dt, spiller);
   oppdaterKamp(dt);
+  oppdaterPaaskeegg(dt, dunket);
   // Etter at spilleren har flyttet seg: hva står den nær nå?
   oppdaterSamhandling();
 }

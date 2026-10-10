@@ -189,6 +189,20 @@ import { QUESTLOGG } from '../data/dungeon';
     transform: translate(-50%, 0);
   }
 
+  /* Prestasjonen: større, sentrert, og \n i teksten blir linjeskift */
+  .melding.prestasjon {
+    /* Så bred som teksten, så linjene bare brytes der \n står */
+    width: max-content;
+    max-width: 90%;
+    top: 28%;
+    padding: 0.75rem 1.25rem;
+    border-width: 2px;
+    font-size: 1rem;
+    text-align: center;
+    white-space: pre-line;
+    line-height: 1.6;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .melding {
       transition: none;

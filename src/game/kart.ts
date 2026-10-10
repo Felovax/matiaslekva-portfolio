@@ -5,6 +5,7 @@
 //   O  dør: Om meg       P  dør: Prosjekter      (dørene er to ruter brede)
 //   E  dør: Erfaring     K  dør: Kontakt
 //   T  fakkel på veggen  x  sprukket vegg (hemmelig)
+//   u  nisje med gummiand (det x blir til når veggen raser)
 //   @  start             Q  questlogg
 //   g  GitHub-portal     l  LinkedIn-portal
 //   S  startpunkt for et skjelett (selve skjelettene styres i skjeletter.ts)
@@ -35,7 +36,7 @@ export const HOYDE = RADER * RUTE;
 
 // Hva som tegnes UNDER hvert tegn: vegg eller gulv.
 // (Hvor man kan GÅ, er et eget spørsmål. Det styres av GANGBARE lenger ned.)
-const VEGGTEGN = new Set(['#', 'x', 'O', 'P', 'E', 'K', 'T']);
+const VEGGTEGN = new Set(['#', 'x', 'u', 'O', 'P', 'E', 'K', 'T']);
 const GULVTEGN = new Set(['.', '@', 'S', 'Q', 'g', 'l']);
 
 // Brukes hvis kartet har et tegn vi ikke kjenner. Knallrosa er en gammel
@@ -84,6 +85,12 @@ export function tegnKart(ctx: CanvasRenderingContext2D, tid: number): void {
           break;
         case 'T':
           tegnFakkel(ctx, x, y, tid);
+          break;
+        case 'x':
+          tegnSprekk(ctx, x, y);
+          break;
+        case 'u':
+          tegnNisjeMedAnd(ctx, x, y);
           break;
         case 'Q':
           tegnQuestlogg(ctx, x, y);
@@ -171,6 +178,36 @@ function tegnFakkel(ctx: CanvasRenderingContext2D, x: number, y: number, tid: nu
   ctx.fillRect(x + 7, y + 5, 2, 3);
 }
 
+// Den sprukne veggen: mørke sprekker i den lyse veggkanten, og noen småstein
+// som har falt ut på gulvet foran. Et lite hint for den som ser etter.
+function tegnSprekk(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  ctx.fillStyle = '#1b1720'; // sprekkene
+  ctx.fillRect(x + 12, y + 5, 4, 1);
+  ctx.fillRect(x + 13, y + 6, 2, 2);
+  ctx.fillRect(x + 12, y + 9, 3, 1);
+
+  ctx.fillStyle = '#8f8276'; // småstein på gulvruten til høyre
+  ctx.fillRect(x + 18, y + 11, 2, 1);
+  ctx.fillRect(x + 21, y + 13, 1, 1);
+  ctx.fillRect(x + 17, y + 14, 1, 1);
+}
+
+// Nisjen som dukker opp når veggen raser, med en gummiand som ser inn i rommet
+function tegnNisjeMedAnd(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  ctx.fillStyle = '#070609'; // hullet i veggen
+  ctx.fillRect(x + 3, y + 2, 13, 13);
+
+  ctx.fillStyle = '#f5c518'; // kropp og hode
+  ctx.fillRect(x + 5, y + 9, 8, 4);
+  ctx.fillRect(x + 9, y + 6, 4, 4);
+
+  ctx.fillStyle = '#f08a24'; // nebbet
+  ctx.fillRect(x + 13, y + 8, 2, 1);
+
+  ctx.fillStyle = '#111111'; // øyet
+  ctx.fillRect(x + 11, y + 7, 1, 1);
+}
+
 // En oppslått bok på gulvet: brunt omslag, to lyse sider og noen tekstlinjer
 function tegnQuestlogg(ctx: CanvasRenderingContext2D, x: number, y: number): void {
   ctx.fillStyle = '#6b3f23'; // omslaget
@@ -244,6 +281,14 @@ export function kolliderer(x: number, y: number, bredde: number, hoyde: number):
     }
   }
   return false;
+}
+
+// Endrer én rute i kartet mens spillet går, f.eks. når den sprukne veggen raser.
+// En tekst kan ikke endres bit for bit i JavaScript, så vi lager en ny rad:
+// alt før ruten + det nye tegnet + alt etter ruten.
+export function settRute(kol: number, rad: number, tegn: string): void {
+  const gammel = KART[rad];
+  KART[rad] = gammel.slice(0, kol) + tegn + gammel.slice(kol + 1);
 }
 
 // Finner første rute med et gitt tegn, f.eks. '@' for startposisjonen.

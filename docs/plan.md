@@ -130,9 +130,9 @@ x.......S.....S.......#
 | `Q` | Questlogg |
 | `OO` `PP` `EE` `KK` | Dører (to ruter brede): Om meg, Prosjekter, Erfaring, Kontakt |
 | `g` / `l` | Portaler til GitHub og LinkedIn (åpnes i ny fane) |
-| `S` | Skjeletter (6), kan ikke skade spilleren |
+| `S` | Startpunkt for skjelettene (6). De vandrer rundt, kan ikke skade spilleren, og faller etter to slag |
 | `T` | Fakler på veggen |
-| `x` | Sprukket vegg, slå på den for å åpne et hemmelig rom med en gummiand |
+| `x` | Sprukket vegg. Ett slag, og den raser: en nisje med en gummiand (blir til `u` i kartet). Nisje i stedet for et helt rom, så kartet ikke må bli bredere |
 
 23 × 10 ruter. Hele rommet vises samtidig, så vi trenger ikke kamera.
 
@@ -177,7 +177,7 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
   bevegelse og kollisjon.
 - [x] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
   questlogg, portaler, «Hopp over dungeonen».
-- [ ] **Fase 4: Skjeletter og påskeegg.**
+- [x] **Fase 4: Skjeletter og påskeegg.**
 - [ ] **Fase 5: Stemning og finpuss.** Fakkellys, overganger, ytelse, tastaturnavigasjon,
   redusert bevegelse, rydding av GitHub-profilen.
 - Senere, hvis ønskelig: mobil, eget domene, egne prosjektsider.

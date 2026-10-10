@@ -27,6 +27,18 @@ export const SKJELETTER = [
   { navn: 'Technical Debt', melding: 'Teknisk gjeld nedbetalt.' },
 ];
 
+// Påskeeggene. Ingen av dem er nødvendige for å finne noe på siden.
+export const PAASKEEGG = {
+  dunk: 'Kollisjon oppdaget. Noe fungerer i hvert fall.',
+  afk: 'Spilleren ser ut til å være AFK.',
+  nisje: 'Du fant en hemmelig nisje!',
+  // Det gummianda sier, i rekkefølge (gummiand-debugging: forklar koden høyt,
+  // så finner du ofte feilen selv)
+  and: ['Gummianda lytter. Forklar problemet ditt høyt.', '…Du fant feilen selv, gjorde du ikke?'],
+  // \n er et linjeskift
+  prestasjon: 'Prestasjon låst opp: Produksjon er feilfri*\n*sannsynligvis',
+};
+
 export const QUESTLOGG = {
   hovedoppdrag: 'Bli en bedre utvikler.',
   sideoppdrag: [

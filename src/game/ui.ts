@@ -97,17 +97,28 @@ export function visHint(ny: Hint | undefined): void {
   }
   hintTast.textContent = ny.tast;
   hintTekst.textContent = ny.tekst;
-  hint.style.left = prosentX(Math.round(ny.x));
   hint.style.top = prosentY(Math.round(ny.y));
-  hint.hidden = false;
+  hint.hidden = false; // må være synlig før vi kan måle bredden
+
+  // Hold hintet innenfor dungeonen. Står punktet nær en kant (som gummianda
+  // helt til venstre), skyves hintet inn så hele teksten synes.
+  const flateBredde = flate.clientWidth; // dungeonens bredde på skjermen, i skjermpiksler
+  const halvBredde = hint.offsetWidth / 2;
+  const onsket = (Math.round(ny.x) / BREDDE) * flateBredde;
+  // Math.max: ikke lenger til venstre enn halve hintet. Math.min: ikke lenger til høyre.
+  const x = Math.min(Math.max(onsket, halvBredde), flateBredde - halvBredde);
+  hint.style.left = `${(x / flateBredde) * 100}%`;
 }
 
 // Viser en kort melding øverst i dungeonen, f.eks. når et skjelett faller.
 // Kommer det en ny melding før den forrige er borte, erstatter den den gamle.
 let meldingTimer: number | undefined;
 
-export function visMelding(tekst: string, varighetMs = 2500): void {
+// prestasjon: true gir en større, sentrert melding over flere linjer
+export function visMelding(tekst: string, varighetMs = 2500, prestasjon = false): void {
   melding.textContent = tekst;
+  // toggle: legg til klassen hvis prestasjon er true, fjern den ellers
+  melding.classList.toggle('prestasjon', prestasjon);
   melding.classList.add('vis'); // CSS-en toner meldingen inn
   window.clearTimeout(meldingTimer); // avbryt nedtellingen til forrige melding
   meldingTimer = window.setTimeout(() => melding.classList.remove('vis'), varighetMs);

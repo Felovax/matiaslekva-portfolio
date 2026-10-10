@@ -33,8 +33,13 @@ const SPILLTASTER = new Set([
 let synlig = true;
 let pauset = false;
 
-function erAktiv(): boolean {
+export function erAktiv(): boolean {
   return synlig && !pauset;
+}
+
+// Holdes en tast nede, eller ble en trykket i dette bildet? Brukes til AFK.
+export function harInput(): boolean {
+  return nede.size > 0 || nyeTrykk.size > 0;
 }
 
 // Kalles fra main.ts når dungeonen kommer inn i eller går ut av bildet

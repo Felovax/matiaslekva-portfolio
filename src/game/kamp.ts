@@ -1,8 +1,10 @@
 // Kamp: mellomrom stikker med sverdet i retningen ridderen ser.
 // Treffer sverdet et skjelett, mister skjelettet ett liv. Etter to treff
 // faller det, og spilleren får XP.
+import { PAASKEEGG } from '../data/dungeon';
 import { overlapper, type Figur } from './figur';
 import { bleTrykket } from './input';
+import { slaaPaaVegg } from './objekter';
 import { levendeSkjeletter, skjeletter, treffSkjelett } from './skjeletter';
 import { spiller } from './spiller';
 import { SPRITES, tegnSpriteRotert } from './sprites';
@@ -40,8 +42,17 @@ function slaa(): void {
       xp += XP_PER_SKJELETT;
       visMelding(`${skjelett.melding} +${XP_PER_SKJELETT} XP`);
       oppdaterStatus(xp, skjeletter.length - levendeSkjeletter().length, skjeletter.length);
+
+      if (levendeSkjeletter().length === 0) {
+        // Alle er beseiret. Vis prestasjonen når meldingen om det siste
+        // skjelettet har fått stå en stund (2,5 sekunder).
+        window.setTimeout(() => visMelding(PAASKEEGG.prestasjon, 6000, true), 2600);
+      }
     }
   }
+
+  // Slaget kan også treffe den sprukne veggen
+  slaaPaaVegg(omrade);
 }
 
 // Et usynlig kvadrat rett foran ridderen, i blikkretningen. Det er dette som

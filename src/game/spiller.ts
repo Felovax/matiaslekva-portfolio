@@ -25,8 +25,13 @@ export const spiller = {
   blikk: { x: 1, y: 0 },
 };
 
-// andre: figurene spilleren ikke kan gå gjennom (skjelettene)
-export function oppdaterSpiller(dt: number, andre: Figur[]): void {
+// Ble spilleren stoppet av noe i forrige bilde? Brukes til å oppdage
+// øyeblikket spilleren dunker i noe, ikke hvert bilde den står inntil.
+let varStoppet = false;
+
+// andre: figurene spilleren ikke kan gå gjennom (skjelettene).
+// Svarer true i det øyeblikket spilleren dunker i noe (til påskeegget).
+export function oppdaterSpiller(dt: number, andre: Figur[]): boolean {
   const retning = hentRetning();
 
   // Lengden av retningen, regnet ut med Pythagoras: √(x² + y²).
@@ -41,7 +46,10 @@ export function oppdaterSpiller(dt: number, andre: Figur[]): void {
 
   // Lengde 0 betyr at ingen tast holdes. Da står spilleren stille, og vi
   // avslutter med en gang (og unngår å dele på 0).
-  if (lengde === 0) return;
+  if (lengde === 0) {
+    varStoppet = false;
+    return false;
+  }
 
   // Husk blikkretningen som en av fire retninger. Går man skrått, vinner
   // sideveis. Math.sign gir -1, 0 eller 1 ut fra fortegnet.
@@ -57,7 +65,14 @@ export function oppdaterSpiller(dt: number, andre: Figur[]): void {
   const dy = (retning.y / lengde) * FART * dt;
 
   // Selve flyttingen og kollisjonen ligger i figur.ts, felles med skjelettene
-  flytt(spiller, dx, dy, andre);
+  const { stoppetX, stoppetY } = flytt(spiller, dx, dy, andre);
+  const stoppet = stoppetX || stoppetY;
+
+  // Et dunk er overgangen fra «fri» til «stoppet». Holder man tasten inne mot
+  // veggen, er det bare ett dunk, ikke ett per bilde.
+  const dunket = stoppet && !varStoppet;
+  varStoppet = stoppet;
+  return dunket;
 }
 
 // Tegner ridderen. tid (sekunder siden start) bestemmer hvilket bilde i
