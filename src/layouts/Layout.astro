@@ -1,18 +1,27 @@
 ---
-// Felles ramme for siden: <html>, <head> og global stil.
+// Felles ramme for alle sider: <html>, <head> og global stil.
 // Alt som står mellom <Layout> og </Layout> i en side havner der <slot /> står.
 import '../styles/global.css';
+import { profil } from '../data/profil';
 
 interface Props {
   tittel: string;
   beskrivelse: string;
+  // Sider som ikke skal dukke opp i søkemotorer, f.eks. 404-siden
+  skjulForSok?: boolean;
 }
 
-const { tittel, beskrivelse } = Astro.props;
+const { tittel, beskrivelse, skjulForSok = false } = Astro.props;
 
 // Lokalt er BASE_URL "/", men på GitHub Pages ligger siden under
 // /matiaslekva-portfolio/. Vi sørger for avsluttende skråstrek i begge tilfeller.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+// Fulle adresser (med https://) til denne siden og til delingsbildet.
+// LinkedIn og andre tjenester som viser forhåndsvisning krever fulle adresser.
+// Astro.site er satt i astro.config.mjs.
+const sideUrl = new URL(Astro.url.pathname, Astro.site);
+const bildeUrl = new URL(`${base}og-bilde.png`, Astro.site);
 ---
 
 <!doctype html>
@@ -23,9 +32,32 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     <title>{tittel}</title>
     <meta name="description" content={beskrivelse} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="canonical" href={sideUrl} />
+    <meta name="theme-color" content="#0d0e12" />
+    {skjulForSok && <meta name="robots" content="noindex" />}
+
+    {/* Open Graph: det LinkedIn, Slack, Teams m.fl. viser når lenken deles */}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:site_name" content={profil.navn} />
+    <meta property="og:title" content={tittel} />
+    <meta property="og:description" content={beskrivelse} />
+    <meta property="og:url" content={sideUrl} />
+    <meta property="og:image" content={bildeUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Pikseldungeon med fire dører: Om meg, Prosjekter, Erfaring og Kontakt"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>
+    {/* Første lenke på siden. Usynlig til den får fokus med Tab, og lar
+        tastaturbrukere hoppe rett til innholdet, forbi menyen og dungeonen. */}
+    <a class="hopp-til-innhold" href="#start">Hopp til innholdet</a>
     <slot />
   </body>
 </html>

@@ -89,9 +89,11 @@ export function tegnLys(ctx: CanvasRenderingContext2D, tid: number, spillerX: nu
   if (!lys) return; // nettleseren kunne ikke lage lyskartet: dropp lyset, spillet virker likevel
 
   // 1. Mørket. source-over er vanlig tegning, som legger nytt oppå gammelt.
+  // Samme farge som bakgrunnen på siden (#0d0e12), så den tomme kanten rundt
+  // rommet ikke blir mørkere enn resten av siden og danner en synlig ramme.
   lys.globalCompositeOperation = 'source-over';
   lys.clearRect(0, 0, BREDDE, HOYDE);
-  lys.fillStyle = `rgba(5, 4, 10, ${MORKE})`;
+  lys.fillStyle = `rgba(13, 14, 18, ${MORKE})`;
   lys.fillRect(0, 0, BREDDE, HOYDE);
 
   // 2. Lyset. destination-out betyr: det vi tegner nå, visker ut det som er der.

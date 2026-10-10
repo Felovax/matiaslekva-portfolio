@@ -3,17 +3,21 @@
 // finne fram.
 import { profil } from '../data/profil';
 
+// Lenkene går til forsiden + seksjonen, så menyen også virker fra andre
+// sider, som 404-siden. På forsiden ruller de bare ned, uten å laste siden på nytt.
+const forside = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
 const menypunkter = [
-  { tekst: 'Om meg', href: '#om-meg' },
-  { tekst: 'Prosjekter', href: '#prosjekter' },
-  { tekst: 'Erfaring', href: '#erfaring' },
-  { tekst: 'Kontakt', href: '#kontakt' },
+  { tekst: 'Om meg', href: `${forside}#om-meg` },
+  { tekst: 'Prosjekter', href: `${forside}#prosjekter` },
+  { tekst: 'Erfaring', href: `${forside}#erfaring` },
+  { tekst: 'Kontakt', href: `${forside}#kontakt` },
 ];
 ---
 
 <header class="header">
   <div class="container innhold">
-    <a class="navn" href="#start">{profil.navn}</a>
+    <a class="navn" href={`${forside}#start`}>{profil.navn}</a>
     <nav aria-label="Hovedmeny">
       <ul>
         {menypunkter.map((punkt) => <li><a href={punkt.href}>{punkt.tekst}</a></li>)}
