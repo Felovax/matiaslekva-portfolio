@@ -7,6 +7,7 @@
 // canvaset, så alt følger med når canvaset skaleres opp 2 × eller 3 ×.
 import { settPauset } from './input';
 import { BREDDE, HOYDE } from './kart';
+import { onskerMindreBevegelse } from './mindreBevegelse';
 import type { Objekt } from './objekter';
 
 // HTML-elementene, hentet én gang i startUi
@@ -151,8 +152,7 @@ export function gaaTilSeksjon(id: string): void {
     }, 600);
   }
 
-  const mindreBevegelse = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (mindreBevegelse) {
+  if (onskerMindreBevegelse()) {
     fullfor(); // ingen overgang, rett til seksjonen
     return;
   }

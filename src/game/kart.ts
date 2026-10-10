@@ -9,6 +9,7 @@
 //   @  start             Q  questlogg
 //   g  GitHub-portal     l  LinkedIn-portal
 //   S  startpunkt for et skjelett (selve skjelettene styres i skjeletter.ts)
+import { onskerMindreBevegelse } from './mindreBevegelse';
 import { SPRITES, tegnSprite, type Sprite } from './sprites';
 
 export const KART = [
@@ -164,7 +165,8 @@ function tegnDor(ctx: CanvasRenderingContext2D, x: number, y: number): void {
 // Grafikkpakken har ingen fakler, så vi tegner en selv med små firkanter.
 // Flammen bytter mellom to former for å se levende ut. Lyset kommer i fase 5.
 function tegnFakkel(ctx: CanvasRenderingContext2D, x: number, y: number, tid: number): void {
-  const blaff = Math.floor(tid * 6) % 2; // 0 eller 1, bytter seks ganger i sekundet
+  // 0 eller 1, bytter seks ganger i sekundet. Står stille ved redusert bevegelse.
+  const blaff = onskerMindreBevegelse() ? 0 : Math.floor(tid * 6) % 2;
 
   ctx.fillStyle = '#4a2f1b'; // holderen
   ctx.fillRect(x + 7, y + 8, 2, 6);
@@ -227,7 +229,8 @@ function tegnQuestlogg(ctx: CanvasRenderingContext2D, x: number, y: number): voi
 
 // En portal: en oval ring i portalens farge, med mørk kjerne som «puster»
 function tegnPortal(ctx: CanvasRenderingContext2D, x: number, y: number, farge: string, tid: number): void {
-  const puls = Math.floor(tid * 3) % 2; // kjernen veksler mellom to størrelser
+  // Kjernen veksler mellom to størrelser, men står stille ved redusert bevegelse
+  const puls = onskerMindreBevegelse() ? 0 : Math.floor(tid * 3) % 2;
 
   ctx.fillStyle = farge;
   ctx.fillRect(x + 5, y + 1, 6, 14);

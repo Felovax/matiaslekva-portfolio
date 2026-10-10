@@ -7,6 +7,7 @@
 import { BREDDE, HOYDE, tegnKart } from './kart';
 import { nullstillTrykk, settSynlig, startInput } from './input';
 import { oppdaterKamp, tegnSverd } from './kamp';
+import { tegnLys } from './lys';
 import { OBJEKTER, oppdaterSamhandling } from './objekter';
 import { oppdaterPaaskeegg } from './paaskeegg';
 import {
@@ -144,4 +145,8 @@ function tegn(ctx: CanvasRenderingContext2D, tid: number): void {
   for (const figur of figurer) {
     figur.tegn();
   }
+
+  // Lyset tegnes til slutt, over alt annet. Lyset rundt ridderen sentreres
+  // litt over føttene, midt på kroppen.
+  tegnLys(ctx, tid, spiller.x + spiller.storrelse / 2, spiller.y + spiller.storrelse / 2 - 6);
 }
