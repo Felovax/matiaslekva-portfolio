@@ -184,7 +184,6 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 
 ## Åpne spørsmål
 
-- Om meg-teksten: utkast ligger i `src/data/profil.ts`, Matias må lese og godkjenne.
 - Valgfritt: din del av Wavey, stillingstittel i hjemmesykepleien.
 - GitHub-profilen: Matias legger inn profil-README (utkast i `docs/github-profil.md`),
   fester repoer og fyller ut profilen.
@@ -192,5 +191,8 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 ## Mulige forbedringer senere
 
 - Enhetstester av spill-logikken (f.eks. kollisjon i `figur.ts` og `kart.ts`) med Vitest
+- Fullskjermknapp for dungeonen: standardstørrelsen beholdes, men den som vil spille,
+  får hele skjermen med heltallsskalering. Dørene må gå ut av fullskjerm før siden ruller.
+  Avventer tilbakemeldinger fra ekte brukere.
 - Mobil: tilpasset layout, og eventuelt trykk-for-å-gå i dungeonen
 - Eget domene (f.eks. matiaslekva.no). Da fjernes `base` i `astro.config.mjs`.
