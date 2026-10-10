@@ -178,7 +178,7 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 - [x] **Fase 3: Dungeonen som navigasjon.** «E – Samhandle», dører med overgang,
   questlogg, portaler, «Hopp over dungeonen».
 - [x] **Fase 4: Skjeletter og påskeegg.**
-- [ ] **Fase 5: Stemning og finpuss.** Fakkellys, overganger, ytelse, tastaturnavigasjon,
+- [x] **Fase 5: Stemning og finpuss.** Fakkellys, overganger, ytelse, tastaturnavigasjon,
   redusert bevegelse, rydding av GitHub-profilen.
 - Senere, hvis ønskelig: mobil, eget domene, egne prosjektsider.
 
@@ -186,3 +186,11 @@ skriver koden bit for bit og forklarer hver del grundig. Matias tester og spør.
 
 - Om meg-teksten: utkast ligger i `src/data/profil.ts`, Matias må lese og godkjenne.
 - Valgfritt: din del av Wavey, stillingstittel i hjemmesykepleien.
+- GitHub-profilen: Matias legger inn profil-README (utkast i `docs/github-profil.md`),
+  fester repoer og fyller ut profilen.
+
+## Mulige forbedringer senere
+
+- Enhetstester av spill-logikken (f.eks. kollisjon i `figur.ts` og `kart.ts`) med Vitest
+- Mobil: tilpasset layout, og eventuelt trykk-for-å-gå i dungeonen
+- Eget domene (f.eks. matiaslekva.no). Da fjernes `base` i `astro.config.mjs`.
