@@ -7,13 +7,17 @@
 // canvaset, så alt følger med når canvaset skaleres opp 2 × eller 3 ×.
 import { settPauset } from './input';
 import { BREDDE, HOYDE } from './kart';
+import { onskerMindreBevegelse } from './mindreBevegelse';
 import type { Objekt } from './objekter';
 
 // HTML-elementene, hentet én gang i startUi
 let flate: HTMLElement;
 let hint: HTMLElement;
+let hintTast: HTMLElement;
 let hintTekst: HTMLElement;
 let questlogg: HTMLDialogElement;
+let melding: HTMLElement;
+let status: HTMLElement;
 
 // Hvor lenge den mørke overgangen tar, i millisekunder (samme som i CSS-en)
 const OVERGANG_MS = 300;
@@ -30,8 +34,11 @@ function prosentY(y: number): string {
 export function startUi(objekter: Objekt[]): void {
   flate = hentElement('dungeon-flate');
   hint = hentElement('dungeon-hint');
+  hintTast = hentElement('dungeon-hint-tast');
   hintTekst = hentElement('dungeon-hint-tekst');
   questlogg = hentElement('questlogg') as HTMLDialogElement;
+  melding = hentElement('dungeon-melding');
+  status = hentElement('dungeon-status');
 
   // Et skilt over hver dør, plassert midt over døren
   const skiltRad = hentElement('dungeon-skilt');
@@ -66,23 +73,61 @@ function hentElement(id: string): HTMLElement {
   return element;
 }
 
-// Objektet hintet viser nå. Brukes til å la være å røre HTML-en hvis
-// ingenting har endret seg siden forrige bilde.
-let viser: Objekt | undefined;
+// Det et hint består av: tasten, teksten, og punktet det skal stå over
+export interface Hint {
+  tast: string; // f.eks. «E» eller «Mellomrom»
+  tekst: string; // f.eks. «Gå til Prosjekter»
+  x: number; // i spillpiksler
+  y: number;
+}
 
-// Viser hintet over et objekt, eller skjuler det hvis objekt er undefined
-export function visHint(objekt: Objekt | undefined): void {
-  if (objekt === viser) return;
-  viser = objekt;
+// En tekst som beskriver hintet som vises nå. Hvis neste hint gir samme
+// tekst, lar vi HTML-en være i fred. Posisjonen rundes til hele spillpiksler,
+// så et hint som følger et skjelett bare oppdateres når det faktisk flytter seg.
+let viser = '';
 
-  if (!objekt) {
+// Viser et hint, eller skjuler det hvis hint er undefined
+export function visHint(ny: Hint | undefined): void {
+  const beskrivelse = ny ? `${ny.tast}|${ny.tekst}|${Math.round(ny.x)}|${Math.round(ny.y)}` : '';
+  if (beskrivelse === viser) return;
+  viser = beskrivelse;
+
+  if (!ny) {
     hint.hidden = true;
     return;
   }
-  hintTekst.textContent = objekt.hint;
-  hint.style.left = prosentX(objekt.x);
-  hint.style.top = prosentY(objekt.hintY);
-  hint.hidden = false;
+  hintTast.textContent = ny.tast;
+  hintTekst.textContent = ny.tekst;
+  hint.style.top = prosentY(Math.round(ny.y));
+  hint.hidden = false; // må være synlig før vi kan måle bredden
+
+  // Hold hintet innenfor dungeonen. Står punktet nær en kant (som gummianda
+  // helt til venstre), skyves hintet inn så hele teksten synes.
+  const flateBredde = flate.clientWidth; // dungeonens bredde på skjermen, i skjermpiksler
+  const halvBredde = hint.offsetWidth / 2;
+  const onsket = (Math.round(ny.x) / BREDDE) * flateBredde;
+  // Math.max: ikke lenger til venstre enn halve hintet. Math.min: ikke lenger til høyre.
+  const x = Math.min(Math.max(onsket, halvBredde), flateBredde - halvBredde);
+  hint.style.left = `${(x / flateBredde) * 100}%`;
+}
+
+// Viser en kort melding øverst i dungeonen, f.eks. når et skjelett faller.
+// Kommer det en ny melding før den forrige er borte, erstatter den den gamle.
+let meldingTimer: number | undefined;
+
+// prestasjon: true gir en større, sentrert melding over flere linjer
+export function visMelding(tekst: string, varighetMs = 2500, prestasjon = false): void {
+  melding.textContent = tekst;
+  // toggle: legg til klassen hvis prestasjon er true, fjern den ellers
+  melding.classList.toggle('prestasjon', prestasjon);
+  melding.classList.add('vis'); // CSS-en toner meldingen inn
+  window.clearTimeout(meldingTimer); // avbryt nedtellingen til forrige melding
+  meldingTimer = window.setTimeout(() => melding.classList.remove('vis'), varighetMs);
+}
+
+// Oppdaterer telleren under dungeonen
+export function oppdaterStatus(xp: number, beseiret: number, totalt: number): void {
+  status.textContent = `XP ${xp} · Skjeletter ${beseiret}/${totalt}`;
 }
 
 // Går gjennom en dør: mørkt over dungeonen, så rulles siden ned til seksjonen
@@ -107,8 +152,7 @@ export function gaaTilSeksjon(id: string): void {
     }, 600);
   }
 
-  const mindreBevegelse = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (mindreBevegelse) {
+  if (onskerMindreBevegelse()) {
     fullfor(); // ingen overgang, rett til seksjonen
     return;
   }

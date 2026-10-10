@@ -7,8 +7,9 @@ Beslutninger, innhold og faser står i `docs/plan.md`. Les den før du gjør end
 - Innholdet (all tekst) ligger i `src/data/`. Endre det der, ikke i komponentene.
 - Matias vil lære av prosjektet: jobb i små steg, si hvilke filer som lages eller
   endres før større endringer, forklar viktige valg, og la ham teste før commit.
-- **Git:** Matias committer og pusher selv. Kjør aldri `git commit` eller
-  `git push`. Foreslå heller en commit-melding når et steg er ferdig.
+- **Git:** Matias pusher alltid selv, så kjør aldri `git push`. Commit bare når
+  Matias ber om det, med en kort melding i hans stil (norsk, små bokstaver, f.eks.
+  «skjeletter som går rundt»). Ellers: foreslå en commit-melding når et steg er ferdig.
 - **Spilldelen (fase 2–5):** Matias vil forstå hvordan spillet kodes, godt nok til
   å forklare koden i et intervju. Han er ny til TypeScript og skriver ikke koden
   selv. Claude skriver koden, bit for bit, og forklarer hver del grundig: hva

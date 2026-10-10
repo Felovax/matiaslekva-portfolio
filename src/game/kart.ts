@@ -5,10 +5,12 @@
 //   O  dør: Om meg       P  dør: Prosjekter      (dørene er to ruter brede)
 //   E  dør: Erfaring     K  dør: Kontakt
 //   T  fakkel på veggen  x  sprukket vegg (hemmelig)
+//   u  nisje med gummiand (det x blir til når veggen raser)
 //   @  start             Q  questlogg
 //   g  GitHub-portal     l  LinkedIn-portal
-//   S  skjelett
-import { animasjonsbilde, SPRITES, tegnSprite, type Sprite } from './sprites';
+//   S  startpunkt for et skjelett (selve skjelettene styres i skjeletter.ts)
+import { onskerMindreBevegelse } from './mindreBevegelse';
+import { SPRITES, tegnSprite, type Sprite } from './sprites';
 
 export const KART = [
   '#######################',
@@ -35,7 +37,7 @@ export const HOYDE = RADER * RUTE;
 
 // Hva som tegnes UNDER hvert tegn: vegg eller gulv.
 // (Hvor man kan GÅ, er et eget spørsmål. Det styres av GANGBARE lenger ned.)
-const VEGGTEGN = new Set(['#', 'x', 'O', 'P', 'E', 'K', 'T']);
+const VEGGTEGN = new Set(['#', 'x', 'u', 'O', 'P', 'E', 'K', 'T']);
 const GULVTEGN = new Set(['.', '@', 'S', 'Q', 'g', 'l']);
 
 // Brukes hvis kartet har et tegn vi ikke kjenner. Knallrosa er en gammel
@@ -85,9 +87,11 @@ export function tegnKart(ctx: CanvasRenderingContext2D, tid: number): void {
         case 'T':
           tegnFakkel(ctx, x, y, tid);
           break;
-        case 'S':
-          // forskyvning: hvert skjelett er i sin egen takt, så de ikke vugger likt
-          tegnSprite(ctx, animasjonsbilde(SPRITES.skjelett, tid, 6, kol), x, y);
+        case 'x':
+          tegnSprekk(ctx, x, y);
+          break;
+        case 'u':
+          tegnNisjeMedAnd(ctx, x, y);
           break;
         case 'Q':
           tegnQuestlogg(ctx, x, y);
@@ -161,7 +165,8 @@ function tegnDor(ctx: CanvasRenderingContext2D, x: number, y: number): void {
 // Grafikkpakken har ingen fakler, så vi tegner en selv med små firkanter.
 // Flammen bytter mellom to former for å se levende ut. Lyset kommer i fase 5.
 function tegnFakkel(ctx: CanvasRenderingContext2D, x: number, y: number, tid: number): void {
-  const blaff = Math.floor(tid * 6) % 2; // 0 eller 1, bytter seks ganger i sekundet
+  // 0 eller 1, bytter seks ganger i sekundet. Står stille ved redusert bevegelse.
+  const blaff = onskerMindreBevegelse() ? 0 : Math.floor(tid * 6) % 2;
 
   ctx.fillStyle = '#4a2f1b'; // holderen
   ctx.fillRect(x + 7, y + 8, 2, 6);
@@ -173,6 +178,36 @@ function tegnFakkel(ctx: CanvasRenderingContext2D, x: number, y: number, tid: nu
 
   ctx.fillStyle = '#ffd89a'; // indre flamme
   ctx.fillRect(x + 7, y + 5, 2, 3);
+}
+
+// Den sprukne veggen: mørke sprekker i den lyse veggkanten, og noen småstein
+// som har falt ut på gulvet foran. Et lite hint for den som ser etter.
+function tegnSprekk(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  ctx.fillStyle = '#1b1720'; // sprekkene
+  ctx.fillRect(x + 12, y + 5, 4, 1);
+  ctx.fillRect(x + 13, y + 6, 2, 2);
+  ctx.fillRect(x + 12, y + 9, 3, 1);
+
+  ctx.fillStyle = '#8f8276'; // småstein på gulvruten til høyre
+  ctx.fillRect(x + 18, y + 11, 2, 1);
+  ctx.fillRect(x + 21, y + 13, 1, 1);
+  ctx.fillRect(x + 17, y + 14, 1, 1);
+}
+
+// Nisjen som dukker opp når veggen raser, med en gummiand som ser inn i rommet
+function tegnNisjeMedAnd(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  ctx.fillStyle = '#070609'; // hullet i veggen
+  ctx.fillRect(x + 3, y + 2, 13, 13);
+
+  ctx.fillStyle = '#f5c518'; // kropp og hode
+  ctx.fillRect(x + 5, y + 9, 8, 4);
+  ctx.fillRect(x + 9, y + 6, 4, 4);
+
+  ctx.fillStyle = '#f08a24'; // nebbet
+  ctx.fillRect(x + 13, y + 8, 2, 1);
+
+  ctx.fillStyle = '#111111'; // øyet
+  ctx.fillRect(x + 11, y + 7, 1, 1);
 }
 
 // En oppslått bok på gulvet: brunt omslag, to lyse sider og noen tekstlinjer
@@ -194,7 +229,8 @@ function tegnQuestlogg(ctx: CanvasRenderingContext2D, x: number, y: number): voi
 
 // En portal: en oval ring i portalens farge, med mørk kjerne som «puster»
 function tegnPortal(ctx: CanvasRenderingContext2D, x: number, y: number, farge: string, tid: number): void {
-  const puls = Math.floor(tid * 3) % 2; // kjernen veksler mellom to størrelser
+  // Kjernen veksler mellom to størrelser, men står stille ved redusert bevegelse
+  const puls = onskerMindreBevegelse() ? 0 : Math.floor(tid * 3) % 2;
 
   ctx.fillStyle = farge;
   ctx.fillRect(x + 5, y + 1, 6, 14);
@@ -212,8 +248,9 @@ function tegnPortal(ctx: CanvasRenderingContext2D, x: number, y: number, farge: 
 // Det er tryggere å liste opp det som er lov enn alt som ikke er lov: glemmer
 // vi et tegn, blir det en vegg og ikke et hull. Samme prinsipp som en
 // allowlist i sikkerhet.
-// (Skjelettene står som massive ruter nå. I fase 4 blir de figurer som går rundt.)
-const GANGBARE = new Set(['.', '@']);
+// S er bare et startpunkt for et skjelett, så ruten er vanlig gulv. Selve
+// skjelettene er figurer, og kollisjon med dem håndteres i figur.ts.
+const GANGBARE = new Set(['.', '@', 'S']);
 
 // En bitteliten avstand. Den trekkes fra høyre- og bunnkanten når vi regner ut
 // hvilke ruter noe dekker, så det å stå akkurat inntil en vegg ikke regnes som
@@ -247,6 +284,14 @@ export function kolliderer(x: number, y: number, bredde: number, hoyde: number):
     }
   }
   return false;
+}
+
+// Endrer én rute i kartet mens spillet går, f.eks. når den sprukne veggen raser.
+// En tekst kan ikke endres bit for bit i JavaScript, så vi lager en ny rad:
+// alt før ruten + det nye tegnet + alt etter ruten.
+export function settRute(kol: number, rad: number, tegn: string): void {
+  const gammel = KART[rad];
+  KART[rad] = gammel.slice(0, kol) + tegn + gammel.slice(kol + 1);
 }
 
 // Finner første rute med et gitt tegn, f.eks. '@' for startposisjonen.

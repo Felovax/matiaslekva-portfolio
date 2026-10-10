@@ -1,6 +1,7 @@
 // Spilleren: hvor den er, hvordan den beveger seg og hvordan den tegnes.
+import { flytt, type Figur } from './figur';
 import { hentRetning } from './input';
-import { finnRute, kolliderer, LITT, RUTE } from './kart';
+import { finnRute, RUTE } from './kart';
 import { animasjonsbilde, SPRITES, tegnSprite } from './sprites';
 
 // Størrelsen på treffboksen, altså den delen av spilleren som kan kollidere.
@@ -20,9 +21,17 @@ export const spiller = {
   storrelse: STORRELSE,
   gaar: false, // går spilleren akkurat nå? Styrer hvilken animasjon som vises.
   serVenstre: false, // ridderen ser mot høyre i grafikken, så venstre = speilvendt
+  // Retningen ridderen så sist: opp, ned, venstre eller høyre. Sverdet slår hit.
+  blikk: { x: 1, y: 0 },
 };
 
-export function oppdaterSpiller(dt: number): void {
+// Ble spilleren stoppet av noe i forrige bilde? Brukes til å oppdage
+// øyeblikket spilleren dunker i noe, ikke hvert bilde den står inntil.
+let varStoppet = false;
+
+// andre: figurene spilleren ikke kan gå gjennom (skjelettene).
+// Svarer true i det øyeblikket spilleren dunker i noe (til påskeegget).
+export function oppdaterSpiller(dt: number, andre: Figur[]): boolean {
   const retning = hentRetning();
 
   // Lengden av retningen, regnet ut med Pythagoras: √(x² + y²).
@@ -37,59 +46,33 @@ export function oppdaterSpiller(dt: number): void {
 
   // Lengde 0 betyr at ingen tast holdes. Da står spilleren stille, og vi
   // avslutter med en gang (og unngår å dele på 0).
-  if (lengde === 0) return;
+  if (lengde === 0) {
+    varStoppet = false;
+    return false;
+  }
+
+  // Husk blikkretningen som en av fire retninger. Går man skrått, vinner
+  // sideveis. Math.sign gir -1, 0 eller 1 ut fra fortegnet.
+  if (Math.abs(retning.x) >= Math.abs(retning.y)) {
+    spiller.blikk = { x: Math.sign(retning.x), y: 0 };
+  } else {
+    spiller.blikk = { x: 0, y: Math.sign(retning.y) };
+  }
 
   // Ved å dele på lengden blir retningen alltid 1 lang, så spilleren ikke går
   // 41 % fortere skrått. Så bruker vi strekning = fart × tid, som i steg 1.
   const dx = (retning.x / lengde) * FART * dt;
   const dy = (retning.y / lengde) * FART * dt;
 
-  // Én akse om gangen: først bortover, så opp/ned. Da kan spilleren gli langs
-  // en vegg når den går skrått mot den, i stedet for å bli stående fast.
-  flyttBortover(dx);
-  flyttOppNed(dy);
-}
+  // Selve flyttingen og kollisjonen ligger i figur.ts, felles med skjelettene
+  const { stoppetX, stoppetY } = flytt(spiller, dx, dy, andre);
+  const stoppet = stoppetX || stoppetY;
 
-// Prøver å flytte spilleren dx piksler bortover (negativ dx = mot venstre)
-function flyttBortover(dx: number): void {
-  if (dx === 0) return;
-
-  const nyX = spiller.x + dx;
-  if (!kolliderer(nyX, spiller.y, STORRELSE, STORRELSE)) {
-    spiller.x = nyX; // veien er fri
-    return;
-  }
-
-  // Veien er stengt. I stedet for å stoppe et lite stykke unna legger vi
-  // spilleren helt inntil ruten den traff. Det er ruten spillerens fremste
-  // kant havnet i. (Det stemmer fordi spilleren aldri flytter seg mer enn
-  // én rute per bilde, og det sørger MAKS_DT i main.ts for.)
-  if (dx > 0) {
-    const kol = Math.floor((nyX + STORRELSE - LITT) / RUTE);
-    spiller.x = kol * RUTE - STORRELSE; // høyre kant inntil rutens venstre side
-  } else {
-    const kol = Math.floor(nyX / RUTE);
-    spiller.x = (kol + 1) * RUTE; // venstre kant inntil rutens høyre side
-  }
-}
-
-// Samme som flyttBortover, bare for y (negativ dy = oppover)
-function flyttOppNed(dy: number): void {
-  if (dy === 0) return;
-
-  const nyY = spiller.y + dy;
-  if (!kolliderer(spiller.x, nyY, STORRELSE, STORRELSE)) {
-    spiller.y = nyY;
-    return;
-  }
-
-  if (dy > 0) {
-    const rad = Math.floor((nyY + STORRELSE - LITT) / RUTE);
-    spiller.y = rad * RUTE - STORRELSE; // bunnen inntil rutens overside
-  } else {
-    const rad = Math.floor(nyY / RUTE);
-    spiller.y = (rad + 1) * RUTE; // toppen inntil rutens underside
-  }
+  // Et dunk er overgangen fra «fri» til «stoppet». Holder man tasten inne mot
+  // veggen, er det bare ett dunk, ikke ett per bilde.
+  const dunket = stoppet && !varStoppet;
+  varStoppet = stoppet;
+  return dunket;
 }
 
 // Tegner ridderen. tid (sekunder siden start) bestemmer hvilket bilde i

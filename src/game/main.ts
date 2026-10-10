@@ -2,14 +2,24 @@
 // alt som skjer i spillet.
 //
 // Denne filen er «dirigenten»: den eier spill-løkken og bestemmer rekkefølgen,
-// men selve arbeidet gjøres i de andre filene (kart, input, spiller, sprites,
-// objekter og ui).
+// men selve arbeidet gjøres i de andre filene (kart, input, spiller,
+// skjeletter, figur, sprites, objekter og ui).
 import { BREDDE, HOYDE, tegnKart } from './kart';
 import { nullstillTrykk, settSynlig, startInput } from './input';
+import { oppdaterKamp, tegnSverd } from './kamp';
+import { tegnLys } from './lys';
 import { OBJEKTER, oppdaterSamhandling } from './objekter';
-import { oppdaterSpiller, tegnSpiller } from './spiller';
+import { oppdaterPaaskeegg } from './paaskeegg';
+import {
+  levendeSkjeletter,
+  oppdaterSkjeletter,
+  skjeletter,
+  tegnHodeskaller,
+  tegnSkjelett,
+} from './skjeletter';
+import { oppdaterSpiller, spiller, tegnSpiller } from './spiller';
 import { lastInnSprites } from './sprites';
-import { startUi } from './ui';
+import { oppdaterStatus, startUi } from './ui';
 
 // Lengste tid ett bilde får telle som, i sekunder. Når fanen er skjult, pauser
 // nettleseren løkken. Uten denne grensen ville alt hoppet langt i første bilde
@@ -38,6 +48,7 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
   startInput();
   startUi(OBJEKTER);
+  oppdaterStatus(0, 0, skjeletter.length); // «XP 0 · Skjeletter 0/6»
 
   // Spillet er bare aktivt når minst halve dungeonen er synlig på skjermen.
   // IntersectionObserver er nettleserens måte å si fra når et element kommer
@@ -82,7 +93,12 @@ export async function startDungeon(canvas: HTMLCanvasElement): Promise<void> {
 
 // Flytter alt i spillet. dt er sekunder siden forrige bilde.
 function oppdater(dt: number): void {
-  oppdaterSpiller(dt);
+  // Spilleren kan ikke gå gjennom skjelettene som står, og omvendt.
+  // dunket: traff spilleren noe akkurat nå? Påskeegget trenger å vite det.
+  const dunket = oppdaterSpiller(dt, levendeSkjeletter());
+  oppdaterSkjeletter(dt, spiller);
+  oppdaterKamp(dt);
+  oppdaterPaaskeegg(dt, dunket);
   // Etter at spilleren har flyttet seg: hva står den nær nå?
   oppdaterSamhandling();
 }
@@ -99,5 +115,38 @@ function tegn(ctx: CanvasRenderingContext2D, tid: number): void {
   ctx.fillRect(0, 0, BREDDE, HOYDE);
 
   tegnKart(ctx, tid);
-  tegnSpiller(ctx, tid);
+  // Hodeskallene ligger på gulvet, så de tegnes før figurene
+  tegnHodeskaller(ctx);
+
+  // Figurene tegnes sortert etter hvor langt ned føttene står. Den som står
+  // lengst ned, er nærmest oss i dette perspektivet og tegnes sist, så den
+  // dekker figurene bak seg.
+  // Hver figur i listen har «bunn» (hvor føttene står) og «tegn» (en funksjon
+  // som tegner den). Slik kan spiller og skjeletter sorteres i samme liste.
+  const figurer = [
+    {
+      bunn: spiller.y + spiller.storrelse,
+      // Sverdet tegnes bak ridderen når han slår oppover, ellers foran
+      tegn: () => {
+        tegnSverd(ctx, 'bak');
+        tegnSpiller(ctx, tid);
+        tegnSverd(ctx, 'foran');
+      },
+    },
+    ...levendeSkjeletter().map((skjelett) => ({
+      bunn: skjelett.y + skjelett.storrelse,
+      tegn: () => tegnSkjelett(ctx, skjelett, tid),
+    })),
+  ];
+
+  // sort sammenligner to og to: et negativt svar betyr at a skal stå før b
+  figurer.sort((a, b) => a.bunn - b.bunn);
+
+  for (const figur of figurer) {
+    figur.tegn();
+  }
+
+  // Lyset tegnes til slutt, over alt annet. Lyset rundt ridderen sentreres
+  // litt over føttene, midt på kroppen.
+  tegnLys(ctx, tid, spiller.x + spiller.storrelse / 2, spiller.y + spiller.storrelse / 2 - 6);
 }
