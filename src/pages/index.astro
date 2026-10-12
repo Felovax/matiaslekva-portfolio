@@ -70,9 +70,12 @@ import { erfaring, kurs } from '../data/erfaring';
               <div>
                 <h3>{e.tittel}</h3>
                 <p class="beskrivelse">{e.beskrivelse}</p>
-                <ul class="punkter">
-                  {e.punkter.map((punkt) => <li>{punkt}</li>)}
-                </ul>
+                {/* Punktene er valgfrie. Lista vises bare hvis det finnes noen. */}
+                {e.punkter && e.punkter.length > 0 && (
+                  <ul class="punkter">
+                    {e.punkter.map((punkt) => <li>{punkt}</li>)}
+                  </ul>
+                )}
                 {e.lenke && (
                   <a href={e.lenke.url} target="_blank" rel="noopener noreferrer">
                     {e.lenke.tekst} <span aria-hidden="true">↗</span>

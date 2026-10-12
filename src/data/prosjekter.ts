@@ -25,12 +25,14 @@ export const prosjekter: Prosjekt[] = [
   {
     navn: 'Cmpera',
     undertittel: 'Bookingsystem for campingplasser',
-    kontekst: 'Under utvikling sammen med en forretningspartner. I pilotfase siden august 2026.',
+    kontekst:
+      'Under utvikling sammen med en forretningspartner. I pilotfase siden august 2026. Nå jobber jeg med partnerskap med en betalingsleverandør og med integrasjoner mot regnskapssystemer.',
     teknologi: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'Row Level Security'],
     erfaring: [
       'Datamodell der mange campingplasser deler én database, med dataene holdt adskilt',
       'Tilgangsstyring for eiere og ansatte, håndhevet i databasen og ikke bare i grensesnittet',
       'Serverlogikk for booking i Supabase Edge Functions',
+      'Adaptere mot ulike regnskapssystemer, så Cmpera kan kobles til systemet hver campingplass bruker (pågår)',
     ],
     lenker: [{ tekst: 'cmpera.no', url: 'https://cmpera.no' }],
     merknad: 'Koden er privat',
@@ -68,7 +70,7 @@ export const prosjekter: Prosjekt[] = [
   {
     navn: 'JobQuestAI',
     undertittel: 'Samler IT-stillinger fra flere kilder på én side',
-    kontekst: 'Eget prosjekt, bygget alene i oktober 2026.',
+    kontekst: 'Eget prosjekt fra oktober 2026.',
     teknologi: ['Python', 'TypeScript', 'Vite', 'GitHub Actions'],
     erfaring: [
       'Å hente data fra flere API-er og RSS-feeder og samle dem i ett format',

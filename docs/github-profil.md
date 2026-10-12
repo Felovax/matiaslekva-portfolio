@@ -22,7 +22,7 @@ Ser etter fast jobb innen backend, database eller cybersikkerhet.
 
 | Prosjekt | Hva | Teknologi |
 | --- | --- | --- |
-| [Cmpera](https://cmpera.no) | Bookingsystem for campingplasser, i pilotfase. Tilgangsstyring for eiere og ansatte håndheves i databasen. Koden er privat. | Next.js, TypeScript, Supabase, PostgreSQL |
+| [Cmpera](https://cmpera.no) | Bookingsystem for campingplasser, i pilotfase. Tilgangsstyring for eiere og ansatte håndheves i databasen. Nå med partnerskap med en betalingsleverandør og adaptere mot regnskapssystemer på gang. Koden er privat. | Next.js, TypeScript, Supabase, PostgreSQL |
 | [AOR](https://github.com/MGumpen/aor) | Rapportering av luftfartshindre. Gruppeprosjekt med Norsk Luftambulanse og Kartverket. | C#, ASP.NET Core, MariaDB, Docker |
 | [SafeMap](https://github.com/MGumpen/safemap) | Kartanalyse av beredskap med romlig SQL. Gruppeprosjekt med Kartverket og Norkart. | Python, FastAPI, PostGIS, Docker |
 | [JobQuestAI](https://github.com/Felovax/JobQuestAI) | Samler IT-stillinger fra flere kilder på én side, oppdatert hver natt. | Python, TypeScript, GitHub Actions |

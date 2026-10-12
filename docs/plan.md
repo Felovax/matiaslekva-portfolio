@@ -36,6 +36,8 @@ Prosjektene vises som oversiktskort, ikke egne case-studier. Dybden tas i interv
   - Datamodell der mange campingplasser deler én database, med dataene holdt adskilt
   - Tilgangsstyring for eiere og ansatte, håndhevet i databasen og ikke bare i grensesnittet
   - Serverlogikk for booking i Edge Functions
+  - Adaptere mot ulike regnskapssystemer (pågår)
+- Pågår: partnerskap med en betalingsleverandør
 - Lenke: https://cmpera.no (koden er privat)
 - Ikke nevn pilot-campingplassen ved navn. Skjermbilder kun med testdata.
 
@@ -59,7 +61,7 @@ Prosjektene vises som oversiktskort, ikke egne case-studier. Dybden tas i interv
 - Lenker: https://github.com/MGumpen/safemap og demovideoene i README-en
 
 **4. JobQuestAI**: Samler IT-stillinger fra flere kilder på én side
-- Eget prosjekt, bygget alene i oktober 2026
+- Eget prosjekt fra oktober 2026
 - Teknologi: Python, TypeScript, Vite, GitHub Actions
 - Erfaring med:
   - Å hente data fra flere API-er og RSS-feeder og samle dem i ett format
@@ -75,13 +77,22 @@ E-Waves er et nettverk for e-handelsbedrifter.
 - Videreutvikler Wavey, en kunnskapsdatabase med chatbot for medlemmene, påbegynt i
   tidligere studenters bacheloroppgave. Bygget med Python (Flask) og Google Gemini.
 
-**Hjemmesykepleien** (3 år ved siden av studiet, fortsatt i jobb)
-Arbeid med pasienter og sensitive helseopplysninger under taushetsplikt.
+Jobbene under er de samme som på LinkedIn, så siden og LinkedIn sier det samme.
+
+**Pleie- og omsorgsassistent, Kristiansand kommune** (sep. 2024 – nå)
+Hjemmesykepleien, deltid ved siden av studiet. Arbeid med pasienter og sensitive
+helseopplysninger under taushetsplikt.
+
+**Salgsmedarbeider, McDonald's** (jun. 2023 – aug. 2024)
+Deltid i Bergen.
+
+**Pleie- og omsorgsassistent, Voss herad** (mai 2022 – jun. 2023)
+Hjemmesykepleien, deltid.
 
 ### Kurs med kursbevis
 
 - Cisco Networking Academy: Introduction to Cybersecurity
-- Cisco Networking Academy: Networking Basics (pågår)
+- Cisco Networking Academy: Networking Basics
 
 ### Teknologi
 
